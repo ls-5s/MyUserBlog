@@ -1,0 +1,19 @@
+require("reflect-metadata");
+const { DataSource } = require("typeorm");
+const { User } = require("./entity/User.js");
+require('dotenv').config()
+
+const AppDataSource = new DataSource({
+    type: process.env.DB_TYPE,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    synchronize: false,
+    logging: false,
+    entities: [User],
+    migrations: [],
+    subscribers: [],
+})
+module.exports = { AppDataSource };
