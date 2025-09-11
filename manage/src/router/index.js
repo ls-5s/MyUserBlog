@@ -17,8 +17,28 @@ const router = createRouter({
     {
       path: '/UseLayout',
       name: 'UseLayout',
-      component: () => import('@/view/layout/UseLayout.vue')
+      component: () => import('@/view/layout/UseLayout.vue'),
+      children: [
+        {
+          path: '/UseLayout/user',
+          name: 'User',
+          component: () => import('@/view/article/UseUser.vue')
+        },
+        {
+          path: '/article/manage',
+          name: 'ArticleManage',
+          component: () => import('@/view/article/ManageArticle.vue')
+        }
+      ]
+
+
+    },
+    {
+      path: '/article/write',
+      name: 'ArticleWrite',
+      component: () => import('@/view/article/WriteArticle.vue')
     }
+
   ]
 })
 
