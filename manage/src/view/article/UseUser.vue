@@ -1,73 +1,100 @@
 <template>
-  <div class="markdown-editor">
-    <h1 class="text-2xl font-bold mb-4">Vue3 Markdown 编辑器</h1>
+  <div>
+    <div class="top">
+      <el-input v-model="input.title" style="width: 1000px; height: 70px; border-left: none !important;"
+        placeholder="输入文章标题..." />
+      <el-select clearable v-model="input.type" placeholder="文章分类" style="width: 240px; height: 40px;">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
+      <el-button type="primary" @click="ADD">发布</el-button>
+    </div>
+    <div class="content">
+      <!-- 左侧Markdown编辑器 -->
+      <el-input ref="editorLeft" v-model="markdownContent" style="width: 100%; height: 750px; resize: none;" :rows="37"
+        type="textarea" @scroll="syncScroll('left')" placeholder="请输入Markdown内容..." />
 
-    <div class="editor-container flex flex-col md:flex-row gap-4">
-      <!-- 输入区域 -->
-      <div class="input-section flex-1">
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          输入 Markdown
-        </label>
-        <textarea v-model="markdownContent"
-          class="w-full h-[500px] p-3 border border-gray-300 rounded-md font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="请输入 Markdown 内容..."></textarea>
-      </div>
-
-      <!-- 预览区域 -->
-      <div class="preview-section flex-1">
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          预览效果
-        </label>
-        <div class="markdown-body w-full h-[500px] p-4 border border-gray-300 rounded-md overflow-auto"
-          v-html="renderedHtml"></div>
-      </div>
+      <!-- 右侧预览区域 - 添加正确的ref引用 -->
+      <div ref="editorRight" class="markdown-body w-full p-4 border border-gray-300 rounded-md overflow-auto"
+        v-html="renderedHtml" @scroll="syncScroll('right')"></div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, nextTick } from 'vue';
 import { marked } from 'marked';
 import hljs from 'highlight.js';
+
 import 'github-markdown-css';
-import 'highlight.js/styles/github-dark.css'; // 可以更换为其他高亮主题
+import 'highlight.js/styles/github-dark.css';
 
-// 初始 Markdown 内容
-const markdownContent = ref(`# 这是一个标题
+// 定义输入数据
+const input = ref({
+  title: '',
+  type: '',
+})
 
-## 这是二级标题
-
-这是一段普通的文本，**这是加粗文本**，*这是斜体文本*。
-
-### 代码示例:
-\`\`\`javascript
-function greeting(name) {
-    return \`Hello, \${name}!\`;
-}
-
-console.log(greeting('Vue3'));
-\`\`\`
-
-\`\`\`python
-def greeting(name):
-    return f"Hello, {name}!"
-
-print(greeting("Vue3"))
-\`\`\`
-
-- 列表项 1
-- 列表项 2
-- 列表项 3
-
-> 这是一段引用文本
-
-![示例图片](https://picsum.photos/800/400 "示例图片描述")
-`);
-
-// 渲染后的 HTML
+const markdownContent = ref('')
 const renderedHtml = ref('');
 
-// 配置 marked
+// 文章分类
+const options = [
+  { value: 'Option1', label: 'Option1' },
+  { value: 'Option2', label: 'Option2' },
+  { value: 'Option3', label: 'Option3' },
+  { value: 'Option4', label: 'Option4' },
+  { value: 'Option5', label: 'Option5' },
+]
+
+// 创建引用以访问DOM元素
+const editorLeft = ref(null)
+const editorRight = ref(null)
+// 标记当前正在滚动的编辑器，避免循环触发滚动事件
+let scrollingEditor = ''
+
+// 滚动同步函数 - 修复版本
+const syncScroll = (source) => {
+  // 如果已经有编辑器在滚动，则不执行操作，避免循环
+  if (scrollingEditor && scrollingEditor !== source) {
+    return
+  }
+
+  scrollingEditor = source
+
+  nextTick(() => {
+    // 获取源元素和目标元素
+    const sourceElement = source === 'left' ? editorLeft.value?.$el : editorRight.value
+    const targetElement = source === 'left' ? editorRight.value : editorLeft.value?.$el
+
+    if (sourceElement && targetElement) {
+      // 获取实际的滚动容器
+      const sourceScrollContainer = source === 'left'
+        ? sourceElement.querySelector('.el-textarea__inner')
+        : sourceElement
+
+      const targetScrollContainer = source === 'left'
+        ? targetElement
+        : targetElement.querySelector('.el-textarea__inner')
+
+      if (sourceScrollContainer && targetScrollContainer) {
+        // 同步滚动位置
+        targetScrollContainer.scrollTop = sourceScrollContainer.scrollTop
+        targetScrollContainer.scrollLeft = sourceScrollContainer.scrollLeft
+      }
+    }
+
+    // 重置滚动标记
+    setTimeout(() => {
+      scrollingEditor = ''
+    }, 10)
+  })
+}
+
+const ADD = () => {
+  console.log(input.value.title)
+  console.log(markdownContent.value)
+}
+
 function setupMarked() {
   marked.setOptions({
     highlight: function (code, lang) {
@@ -96,29 +123,65 @@ onMounted(() => {
 
 // 监听内容变化，实时更新渲染
 watch(markdownContent, renderMarkdown);
+// 移除错误的监听
+// watch(input.value.contentMarkdown, renderMarkdown); // 这行是错误的，已移除
 </script>
 
 <style scoped>
-.markdown-editor {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+* {
+  box-sizing: border-box;
 }
 
-.editor-container {
+.top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgb(255, 255, 255);
+  height: 70px;
+  border-bottom: 1px solid rgb(235, 237, 240);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.el-input {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.el-select {
+  margin-left: 30px;
+}
+
+.el-button {
+  margin-left: 270px;
+}
+
+.content {
+  margin-top: 70px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: rgb(255, 255, 255);
+  height: 750px;
+  /* 统一高度 */
+  gap: 10px;
+  padding: 10px;
+}
+
+/* 确保每个编辑器占满宽度 */
+.content .el-input {
   width: 100%;
 }
 
-/* 滚动条美化 */
-.preview-section ::-webkit-scrollbar,
-.input-section ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.preview-section ::-webkit-scrollbar-thumb,
-.input-section ::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 3px;
+/* 预览区域样式 */
+.markdown-body {
+  width: 100%;
+  height: 100%;
+  /* 与左侧高度保持一致 */
+  overflow-y: auto;
+  overflow-x: auto;
 }
 </style>
