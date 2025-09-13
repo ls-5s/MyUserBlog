@@ -64,7 +64,7 @@ const loginSubmit = async () => {
 
     console.log(res.data.token)
     if (res.data.code === 201) {
-      userStore.addToken(res.data.token)
+      userStore.addToken(res.data.token, res.data.username)
       ElMessage.success('登录成功')
       router.push('/UseLayout')
 

@@ -1,8 +1,8 @@
 const { EntitySchema } = require("typeorm");
 
-const User = new EntitySchema({
-    name: "User",
-    tableName: "users",
+const Article = new EntitySchema({
+    name: "Article",
+    tableName: "articles",
     columns: {
         // 主键（自增整数示例，根据需求选 UUID）
         id: {
@@ -10,28 +10,37 @@ const User = new EntitySchema({
             type: "int",
             generated: "increment"
         },
-        username: {
+        title: {
             type: "varchar",
             length: 255,
             nullable: false,
-            unique: true
+            unique: false
         },
-        password: {
+        type: {
             type: "varchar",
             length: 255,
             nullable: false
         },
+        content: {
+            type: "text",
+            nullable: false
+        },
+        createTime: {
+            type: "varchar",
+            length: 255,
+            nullable: false
+        }
     },
-     relations: {
+    relations: {
         // 一个问题可以属于多个分类（多对多关系）
-        articles: {
+        user: {
             type: 'many-to-many', // 关系类型：多对多
-            target: 'Article', // 关联的目标实体
-            inverseSide: 'user', // 对应 Category 中关联 Question 的字段名
-            joinTable: true, // 作为拥有方，生成中间表
-            cascade: true // 级联操作
+            target: 'User', // 关联的目标实体
+            inverseSide: 'articles', // 对应 User 中关联 Article 的字段名
+         
+           
         }
     }
 });
 
-module.exports = { User };
+module.exports = { Article };

@@ -1,12 +1,14 @@
 const express = require('express')
 const app = express()
 const router = require('./router/login')
+const articleRouter = require('./router/article')
 const cors = require('cors')
 const{ AppDataSource }= require('./data.source')
 
 app.use(cors())
 app.use(express.json())
 app.use('/user', router)
+app.use('/article', articleRouter)
 
 // 错误处理中间件
 app.use((err, req, res, next) => {

@@ -37,7 +37,8 @@ router.post('/login', async (req, res) => {
             res.status(201).json({
                 code: 201,
                 message: '登录成功',
-                token: 'Bearer ' + result.token
+                token: 'Bearer ' + result.token,
+                username: req.body.username
             })
             
         } else {

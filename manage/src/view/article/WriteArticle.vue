@@ -33,7 +33,8 @@
 import { ref, onMounted, watch, nextTick } from 'vue';
 import { marked } from 'marked';
 import hljs from 'highlight.js';
-
+import { publishArticle } from '@/api/article'
+import { useUserStore } from '@/stores/index'
 import 'github-markdown-css';
 import 'highlight.js/styles/github-dark.css';
 
@@ -87,10 +88,23 @@ const syncScroll = (source) => {
     }, 10)
   })
 }
-
-const ADD = () => {
-  console.log(input.value.title)
-  console.log(markdownContent.value)
+const useStore = useUserStore()
+// 发布文章
+const ADD = async () => {
+  const res = await publishArticle({
+    username: useStore.username,
+    title: input.value.title,
+    type: input.value.type,
+    content: renderedHtml.value
+  })
+  if (res.data.code === 201) {
+    console.log(res)
+    ElMessage.success('发布成功')
+    input.value.title = ''
+    input.value.type = ''
+    markdownContent.value = ''
+    renderedHtml.value = ''
+  }
 }
 
 function setupMarked() {

@@ -1,5 +1,5 @@
 import axios from 'axios'
-// import { useUserStore } from '@/store'
+import { useUserStore } from '@/stores/index'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
 const baseURL = 'http://localhost:3000'
@@ -14,10 +14,10 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     // TODO 2. 携带token
-    // const useStore = useUserStore()
-    // if (useStore.token) {
-    //   config.headers.Authorization = useStore.token
-    // }
+    const useStore = useUserStore()
+    if (useStore.token) {
+      config.headers.Authorization = useStore.token
+    }
     return config
   },
   (err) => Promise.reject(err)
