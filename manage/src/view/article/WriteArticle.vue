@@ -48,13 +48,41 @@ const markdownContent = ref('')
 const renderedHtml = ref('');
 
 // 文章分类
+// 文章分类
 const options = [
-  { value: 'Option1', label: 'Option1' },
-  { value: 'Option2', label: 'Option2' },
-  { value: 'Option3', label: 'Option3' },
-  { value: 'Option4', label: 'Option4' },
-  { value: 'Option5', label: 'Option5' },
-]
+  // 前端细分
+  { value: '前端', label: '前端' },
+  { value: 'HTML/CSS', label: 'HTML/CSS' },
+  { value: 'JavaScript', label: 'JavaScript' },
+  { value: '前端框架', label: '前端框架' }, // Vue/React/Angular 等
+  { value: '小程序开发', label: '小程序开发' },
+  { value: '移动端H5', label: '移动端H5' },
+
+  // 后端细分
+  { value: '后端', label: '后端' },
+  { value: 'Java', label: 'Java' },
+  { value: 'Python', label: 'Python' },
+  { value: 'Go', label: 'Go' },
+  { value: 'PHP', label: 'PHP' },
+  { value: 'Node.js', label: 'Node.js' },
+  { value: 'Express', label: 'Express' },
+  { value: '后端框架', label: '后端框架' }, // Spring/Django/Gin 等
+
+  // 数据库
+  { value: '数据库', label: '数据库' },
+  { value: 'MySQL', label: 'MySQL' },
+  { value: 'MongoDB', label: 'MongoDB' },
+  { value: 'PostgreSQL', label: 'PostgreSQL' },
+  { value: 'Redis', label: 'Redis' },
+
+  // 原有其他分类
+  { value: 'Android', label: 'Android' },
+  { value: 'iOS', label: 'iOS' },
+  { value: '人工智能', label: '人工智能' },
+  { value: '开发工具', label: '开发工具' },
+  { value: '代码人生', label: '代码人生' },
+  { value: '阅读', label: '阅读' },
+];
 
 // 创建引用以访问DOM元素
 const editorLeft = ref(null)

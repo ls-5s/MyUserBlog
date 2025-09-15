@@ -16,3 +16,11 @@ export const getArticleList = (data) => {
     }
   })
 }
+// 删除文章
+export const deleteArticle = (id) => {
+  return request.delete('/article/delete', {
+    params: {
+      id
+    }
+  })
+}

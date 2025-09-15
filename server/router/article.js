@@ -2,6 +2,7 @@ const express = require('express'); // 注意：原始代码中缺少这一行�
 const router = express.Router();
 const { writeArticle } = require('../service/writearticle');
 const { getArticleList } = require('../service/getarticle');
+const { deleteArticle } = require('../service/deletearticle');
 
 // 文章发布
 router.post('/write', async (req, res) => {
@@ -20,5 +21,12 @@ router.get('/list', async (req, res) => {
         res.status(500).json({ message: '服务器错误', error: error.message });
     }
 })
-
+// 删除文章
+router.delete('/delete', async (req, res) => {
+    try {
+        await deleteArticle(req, res);
+    } catch (error) {
+        res.status(500).json({ message: '服务器错误', error: error.message });
+    }
+})
 module.exports = router;
