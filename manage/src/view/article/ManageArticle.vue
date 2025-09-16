@@ -1,13 +1,17 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { ElButton, ElMessage } from 'element-plus';
+import { Search } from '@element-plus/icons-vue'
 import 'element-plus/es/components/button/style/css';
 import 'element-plus/es/components/message/style/css';
-import { getArticleList, deleteArticle } from '@/api/article'
+import { getArticleList, deleteArticle, searchArticle } from '@/api/article'
 import { useUserStore } from '@/stores/index'
 import { formatDate } from '@/utils/format'
 
 const list = ref([])
+
+const input = ref('')
+
 const useStore = useUserStore()
 
 // 分页相关数据
@@ -62,7 +66,37 @@ const handleDelete = async (articleId) => {
     ElMessage.error('删除文章失败');
   }
 };
-
+// 搜索文章
+const handleSearch = async () => {
+  try {
+    // 添加搜索关键词验证
+    if (!input.value.trim()) {
+      ElMessage.warning('请输入搜索关键词');
+      return;
+    }
+    const res = await searchArticle(input.value)
+    input.value = ''
+    console.log(res)
+    if (res.data.code === 201) {
+      currentPage.value = 1; // 搜索后重置当前页码
+      list.value = res.data.articles || [];
+      total.value = list.value.length; // 同步更新总数
+      ElMessage.success('搜索成功')
+    }
+    else {
+      ElMessage.error(res.message || '搜索失败')
+    }
+  } catch (error) {
+    input.value = ''
+    console.error('搜索文章失败:', error);
+    ElMessage.error('搜索文章失败', error.message);
+  }
+}
+// 重新获取文章列表
+const refreshArticleList = async () => {
+  currentPage.value = 1; // 搜索后重置当前页码
+  await fetchArticleList()
+}
 onMounted(async () => {
   await fetchArticleList()
 })
@@ -70,7 +104,11 @@ onMounted(async () => {
 <template>
   <div class="common-layout">
     <div class="top">
-      文章管理
+      <div class="title">文章管理 </div>
+      <el-input @keyup.enter="handleSearch" v-model="input" :prefix-icon="Search" style="max-width: 240px "
+        placeholder="请输入标题关键字" />
+      <el-button  type="primary" @click="handleSearch">查询</el-button>
+      <el-button type="success" @click="refreshArticleList">重置</el-button>
     </div>
     <div class="content">
       <!-- 文章列表 - 使用框框布局 -->
@@ -106,6 +144,9 @@ onMounted(async () => {
 }
 
 .top {
+  display: flex;
+
+  align-items: center;
   height: 50px;
   line-height: 50px;
   font-size: 20px;
@@ -116,6 +157,14 @@ onMounted(async () => {
   padding-left: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+}
+
+.top .el-input {
+  margin-left: 10px;
+}
+
+.top .el-button {
+  margin-left: 10px;
 }
 
 .content {

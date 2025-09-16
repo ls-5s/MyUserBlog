@@ -24,3 +24,11 @@ export const deleteArticle = (id) => {
     }
   })
 }
+// 根据标题查询文章
+export const searchArticle = (title) => {
+  return request.get('/article/search', {
+    params: {
+      title
+    }
+  })
+}

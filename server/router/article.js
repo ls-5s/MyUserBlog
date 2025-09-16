@@ -3,6 +3,7 @@ const router = express.Router();
 const { writeArticle } = require('../service/writearticle');
 const { getArticleList } = require('../service/getarticle');
 const { deleteArticle } = require('../service/deletearticle');
+const { getArticleListByTitle } = require('../service/getArticleList');
 
 // 文章发布
 router.post('/write', async (req, res) => {
@@ -25,6 +26,14 @@ router.get('/list', async (req, res) => {
 router.delete('/delete', async (req, res) => {
     try {
         await deleteArticle(req, res);
+    } catch (error) {
+        res.status(500).json({ message: '服务器错误', error: error.message });
+    }
+})
+// 根据标题查询文章
+router.get('/search', async (req, res) => {
+    try {
+        await getArticleListByTitle(req, res);
     } catch (error) {
         res.status(500).json({ message: '服务器错误', error: error.message });
     }
