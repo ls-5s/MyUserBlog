@@ -71,6 +71,7 @@ onMounted(() => {
           <div class="article-info">
             <h3 class="article-title">{{ article.title }}</h3>
             <p class="article-date">{{ formatDate(article.createTime) }}</p>
+
           </div>
           <div class="article-actions">
             <el-button type="primary" size="small" @click="handleEdit(article.id)">

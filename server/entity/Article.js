@@ -25,6 +25,10 @@ const Article = new EntitySchema({
             type: "text",
             nullable: false
         },
+        markdownContent: {
+            type: "text",
+            nullable: false
+        },
         createTime: {
             type: "varchar",
             length: 255,

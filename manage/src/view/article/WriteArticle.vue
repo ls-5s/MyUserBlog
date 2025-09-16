@@ -10,21 +10,12 @@
     </div>
     <div class="content">
       <!-- 左侧Markdown编辑器 - 改为普通textarea -->
-      <textarea
-        ref="editorLeft"
-        v-model="markdownContent"
-        class="markdown-editor"
-        placeholder="请输入Markdown内容..."
-        @scroll="syncScroll('left')"
-      ></textarea>
+      <textarea ref="editorLeft" v-model="markdownContent" class="markdown-editor" placeholder="请输入Markdown内容..."
+        @scroll="syncScroll('left')"></textarea>
 
       <!-- 右侧预览区域 -->
-      <div
-        ref="editorRight"
-        class="markdown-body w-full p-4 border border-gray-300 rounded-md overflow-auto"
-        v-html="renderedHtml"
-        @scroll="syncScroll('right')"
-      ></div>
+      <div ref="editorRight" class="markdown-body w-full p-4 border border-gray-300 rounded-md overflow-auto"
+        v-html="renderedHtml" @scroll="syncScroll('right')"></div>
     </div>
   </div>
 </template>
@@ -32,6 +23,7 @@
 <script setup>
 import { ref, onMounted, watch, nextTick } from 'vue';
 import { marked } from 'marked';
+import router from '@/router/index'
 import hljs from 'highlight.js';
 import { publishArticle } from '@/api/article'
 import { useUserStore } from '@/stores/index'
@@ -57,6 +49,7 @@ const options = [
   { value: '前端框架', label: '前端框架' }, // Vue/React/Angular 等
   { value: '小程序开发', label: '小程序开发' },
   { value: '移动端H5', label: '移动端H5' },
+  { value: 'git', label: 'git' },
 
   // 后端细分
   { value: '后端', label: '后端' },
@@ -123,9 +116,11 @@ const ADD = async () => {
     username: useStore.username,
     title: input.value.title,
     type: input.value.type,
-    content: renderedHtml.value
+    content: renderedHtml.value,
+    markdownContent: markdownContent.value
   })
   if (res.data.code === 201) {
+    await router.push('/article/manage')
     console.log(res)
     ElMessage.success('发布成功')
     input.value.title = ''
@@ -171,7 +166,8 @@ watch(markdownContent, renderMarkdown);
 }
 
 /* 添加html和body的高度设置，确保页面占满整个视口 */
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;

@@ -18,7 +18,7 @@ const getArticleListByTitle = async (req, res) => {
         const articles = await articleRepository.find({
             where: queryConditions,
             order: {
-                createTime: 'DESC' // 按创建时间倒序排列
+                createTime: 'DESC' 
             }
         });
 

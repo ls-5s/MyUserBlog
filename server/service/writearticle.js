@@ -8,10 +8,10 @@ const { Article } = require('../entity/Article');
 
 const writeArticle = async (req, res) => {
     try {
-        const { username, title, type, content } = req.body;
+        const { username, title, type, content, markdownContent } = req.body;
         
         // 1. 验证输入数据
-        if (!username || !title || !type || !content) {
+        if (!username || !title || !type || !content ) {
             return res.status(400).json({
                 code: 400,
                 message: '缺少必要的文章信息',
@@ -59,6 +59,7 @@ const writeArticle = async (req, res) => {
             title: title,
             type: type,
             content: content,
+            markdownContent: markdownContent,
             createTime: new Date().toISOString() // 格式化时间以匹配varchar类型
         });
         

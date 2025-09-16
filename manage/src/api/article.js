@@ -5,7 +5,8 @@ export const publishArticle = (data) => {
     username: data.username,
     title: data.title,
     type: data.type,
-    content: data.content
+    content: data.content,
+    markdownContent: data.markdownContent
   })
 }
 // 文章列表(获取个人所以文章)

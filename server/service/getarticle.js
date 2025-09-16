@@ -11,7 +11,15 @@ const getArticleList = async (req, res) => {
         const { username } = req.query;
         const user = await AppDataSource.manager.findOne(User, {
             where: { username },
-            relations: { articles: true }
+            relations: { articles: true },
+            // 添加排序配置，指定 articles 的排序字段和方式
+            order: {
+                articles: {
+                    // 假设文章有 createTime 字段，按创建时间升序
+                    // 可替换为实际需要排序的字段（如 id、publishTime 等）
+                    createTime: 'DESC'
+                }
+            }
         });
         if (!user) {
             return res.status(404).json({ message: '用户不存在' });
