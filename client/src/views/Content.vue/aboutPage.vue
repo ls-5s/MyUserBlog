@@ -126,46 +126,55 @@
   </div>
 </template>
 
+<script setup>
+import { ref, onMounted } from 'vue'
+
+// 添加暗黑模式切换逻辑
+const isDark = ref(false)
+
+onMounted(() => {
+  // 从 localStorage 中获取保存的主题状态
+  const savedTheme = localStorage.getItem('appTheme')
+  isDark.value = savedTheme === 'dark'
+  // 应用主题
+  if (isDark.value) {
+    document.documentElement.classList.add('dark')
+  }
+})
+
+
+</script>
+
 <style scoped>
-/* 基础变量 */
+/* 基础变量 - 精简后的核心变量 */
 :root {
   --primary-color: #4f46e5;
-  --primary-light: #818cf8;
-  --primary-dark: #4338ca;
   --secondary-color: #ec4899;
-  --success-color: #10b981;
-  --warning-color: #f59e0b;
   --danger-color: #ef4444;
   --text-primary: #1f2937;
   --text-secondary: #4b5563;
-  --text-tertiary: #9ca3af;
   --bg-primary: #ffffff;
   --bg-secondary: #f9fafb;
-  --bg-tertiary: #f3f4f6;
   --border-color: #e5e7eb;
   --transition: all 0.3s ease;
 }
 
 /* 暗黑模式适配 */
-:deep(.dark) {
+.dark {
   --primary-color: #818cf8;
-  --primary-light: #a5b4fc;
-  --primary-dark: #6366f1;
   --secondary-color: #f472b6;
   --text-primary: #f3f4f6;
   --text-secondary: #d1d5db;
-  --text-tertiary: #9ca3af;
   --bg-primary: #1f2937;
   --bg-secondary: #111827;
-  --bg-tertiary: #374151;
   --border-color: #374151;
 }
 
 /* 全局样式 */
 .personal-intro {
-  margin-top: 60px;
+  margin-top: 20px;
   min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
   color: var(--text-primary);
   background-color: var(--bg-secondary);
   position: relative;
@@ -175,10 +184,7 @@
 /* 背景效果 */
 .intro-bg {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.05) 0%, rgba(236, 72, 153, 0.05) 90%);
   z-index: 0;
 }
@@ -197,29 +203,40 @@
   align-items: start;
 }
 
-/* 左侧内容 */
-.intro-left {
+/* 左右内容区 */
+.intro-left,
+.intro-right {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-/* 信息卡片 */
-.info-card {
+/* 卡片通用样式 - 合并所有卡片样式 */
+.info-card,
+.contact-card,
+.intro-section {
   background-color: var(--bg-primary);
   border-radius: 1rem;
-  padding: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--border-color);
-  text-align: center;
   transition: var(--transition);
 }
 
-.info-card:hover {
+/* 卡片悬停效果 */
+.info-card:hover,
+.intro-section:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
+/* 信息卡片特定样式 */
+.info-card {
+  padding: 2rem;
+  text-align: center;
+}
+
+/* 头像样式 */
 .avatar-wrapper {
   position: relative;
   width: 150px;
@@ -238,18 +255,16 @@
 
 .avatar-border {
   position: absolute;
-  top: -3px;
-  left: -3px;
-  right: -3px;
-  bottom: -3px;
+  inset: -3px;
   border-radius: 50%;
   border: 3px solid transparent;
   background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)) border-box;
-
+  -webkit-mask-composite: xor;
   mask-composite: exclude;
   z-index: 1;
 }
 
+/* 基本信息样式 */
 .basic-info .my-name {
   font-size: 1.5rem;
   font-weight: 700;
@@ -263,38 +278,7 @@
   font-weight: 500;
 }
 
-/* 联系卡片 */
-.contact-card {
-  background-color: var(--bg-primary);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border: 1px solid var(--border-color);
-}
-
-/* 右侧内容 */
-.intro-right {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* 通用区块样式 */
-.intro-section {
-  background-color: var(--bg-primary);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border: 1px solid var(--border-color);
-  transition: var(--transition);
-}
-
-.intro-section:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-
-/* 区块头部 */
+/* 区块通用样式 */
 .section-header {
   display: flex;
   align-items: center;
@@ -304,7 +288,8 @@
   border-bottom: 2px solid var(--border-color);
 }
 
-.section-icon {
+.section-icon,
+.contact-icon {
   color: var(--primary-color);
   flex-shrink: 0;
 }
@@ -316,7 +301,6 @@
   margin: 0;
 }
 
-/* 区块内容 */
 .section-content {
   color: var(--text-secondary);
   line-height: 1.7;
@@ -348,6 +332,7 @@
   color: var(--text-primary);
 }
 
+/* 技术标签 */
 .tech-tags {
   display: flex;
   flex-wrap: wrap;
@@ -365,30 +350,31 @@
   transition: var(--transition);
 }
 
-.tech-tag:hover {
+/* 标签悬停效果 */
+.tech-tag:hover:not(.learning) {
   background-color: var(--primary-color);
   color: #1f2937;
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);
 }
 
-/* 针对暗黑模式单独设置 */
-:deep(.dark) .tech-tag:hover {
-  background-color: rgba(79, 70, 229, 0.1);
-  color: var(--primary-color);
-  transform: translateY(-2px);
-  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
-}
+/* 学习中标签 */
 .tech-tag.learning {
   background-color: rgba(239, 68, 68, 0.1);
   color: var(--danger-color);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-style: dashed;
+  border: 1px dashed rgba(239, 68, 68, 0.2);
 }
 
 .tech-tag.learning:hover {
   background-color: rgba(239, 68, 68, 0.2);
   box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+}
+
+/* 暗黑模式标签优化 */
+.dark .tech-tag:hover {
+  background-color: rgba(79, 70, 229, 0.1);
+  color: var(--primary-color);
+  transform: translateY(-2px);
 }
 
 /* 兴趣爱好列表 */
@@ -399,8 +385,7 @@
 }
 
 .hobby-item {
-  padding: 0.5rem 0;
-  padding-left: 1.5rem;
+  padding: 0.5rem 0 0.5rem 1.5rem;
   position: relative;
   font-size: 1rem;
 }
@@ -424,64 +409,29 @@
   padding: 0.75rem 0;
 }
 
-.contact-icon {
-  color: var(--primary-color);
-  flex-shrink: 0;
-}
-
 .contact-text {
   font-size: 0.95rem;
   color: var(--text-secondary);
 }
 
-/* 响应式设计 */
+/* 响应式设计 - 大幅精简 */
 @media (max-width: 992px) {
   .intro-container {
     grid-template-columns: 1fr;
   }
 
-  .intro-left {
-    order: 2;
-  }
+  .intro-left { order: 2; }
+  .intro-right { order: 1; }
 
-  .intro-right {
-    order: 1;
-  }
-
-  .avatar-wrapper {
-    width: 120px;
-    height: 120px;
-  }
+  .avatar-wrapper { width: 120px; height: 120px; }
 }
 
 @media (max-width: 640px) {
-  .intro-container {
-    padding: 1rem;
-  }
-
-  .info-card {
-    padding: 1.5rem;
-  }
-
-  .basic-info .my-name {
-    font-size: 1.3rem;
-  }
-
-  .section-header {
-    padding-bottom: 0.75rem;
-  }
-
-  .section-title {
-    font-size: 1.15rem;
-  }
-
-  .tech-tags {
-    gap: 0.4rem;
-  }
-
-  .tech-tag {
-    padding: 0.35rem 0.7rem;
-    font-size: 0.8125rem;
-  }
+  .intro-container { padding: 1rem; }
+  .info-card { padding: 1.5rem; }
+  .basic-info .my-name { font-size: 1.3rem; }
+  .section-header { padding-bottom: 0.75rem; }
+  .section-title { font-size: 1.15rem; }
+  .tech-tag { padding: 0.35rem 0.7rem; font-size: 0.8125rem; }
 }
 </style>

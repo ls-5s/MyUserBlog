@@ -70,8 +70,10 @@ onMounted(() => {
         <div v-for="article in articles" :key="article.id" class="article-card">
           <div class="article-info">
             <h3 class="article-title">{{ article.title }}</h3>
-            <p class="article-date">{{ formatDate(article.createTime) }}</p>
-
+            <div class="article-meta">
+              <p class="article-date">{{ formatDate(article.createTime) }}</p>
+              <p class="article-views">阅读量：{{ article.views || 0 }}</p>
+            </div>
           </div>
           <div class="article-actions">
             <el-button type="primary" size="small" @click="handleEdit(article.id)">
@@ -162,9 +164,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  /* 减小标题和日期之间的间距 */
   margin-right: 16px;
-  /* 增加与操作按钮之间的间距 */
 }
 
 .article-title {
@@ -176,10 +176,22 @@ onMounted(() => {
   max-width: 100%;
 }
 
+.article-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .article-date {
   margin: 0;
   font-size: 14px;
   color: #999;
+}
+
+.article-views {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
 }
 
 /* 文章操作按钮区域 */

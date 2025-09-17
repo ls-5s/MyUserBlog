@@ -13,7 +13,11 @@ const router = createRouter({
     }, {
       path: 'layout/about',
       component: () => import('@/views/Content.vue/aboutPage.vue'),
-    }],
+    },{
+      path: 'layout/class',
+      component: () => import('@/views/Content.vue/classPage.vue'),
+    }
+  ],
   }],
 })
 
