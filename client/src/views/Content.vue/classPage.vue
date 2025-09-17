@@ -405,6 +405,16 @@ onMounted(() => {
   gap: 4px;
   padding: 8px 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+/* 添加 update-item 的悬停效果 */
+.update-item:hover {
+  background-color: rgba(99, 102, 241, 0.05);
+  transform: translateX(4px);
 }
 
 .update-item:last-child {
@@ -415,17 +425,28 @@ onMounted(() => {
   font-size: 14px;
   color: var(--text-primary);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
   line-height: 1.4;
+  display: block;
 }
 
+/* 增强文章标题的悬停效果 */
 .article-title:hover {
   color: var(--primary-color);
+  /* 移除下划线效果 */
+  /* text-decoration: underline;
+  text-underline-offset: 2px; */
 }
 
 .article-time {
   font-size: 12px;
   color: #9ca3af;
+  transition: color 0.2s ease;
+}
+
+/* 当整个项目悬停时，时间也变色 */
+.update-item:hover .article-time {
+  color: var(--primary-color);
 }
 
 /* 暗黑模式下最近更新样式 */
@@ -445,6 +466,10 @@ onMounted(() => {
   border-bottom-color: rgba(255, 255, 255, 0.05);
 }
 
+.dark .update-item:hover {
+  background-color: rgba(99, 102, 241, 0.1);
+}
+
 .dark .article-title {
   color: #f9fafb;
 }
@@ -454,6 +479,10 @@ onMounted(() => {
 }
 
 .dark .article-title:hover {
+  color: var(--primary-color);
+}
+
+.dark .update-item:hover .article-time {
   color: var(--primary-color);
 }
 </style>
