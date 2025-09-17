@@ -4,10 +4,10 @@ import { ElButton, ElMessage } from 'element-plus';
 import { Search } from '@element-plus/icons-vue'
 import 'element-plus/es/components/button/style/css';
 import 'element-plus/es/components/message/style/css';
-import { getArticleList, deleteArticle, searchArticle } from '@/api/article'
+import { getArticleList, deleteArticle, searchArticle} from '@/api/article'
 import { useUserStore } from '@/stores/index'
 import { formatDate } from '@/utils/format'
-
+import router from '@/router/index'
 const list = ref([])
 
 const input = ref('')
@@ -44,16 +44,17 @@ const handleCurrentChange = (val) => {
 };
 
 // 编辑文章
-const handleEdit = (articleId) => {
-  console.log('编辑文章:', articleId);
-  // 实际项目中这里可以跳转到编辑页面或打开编辑弹窗
+const handleEdit = async (articleId) => {
+  await router.push('/article/update?id=' + articleId)
+  // console.log(articleId)
+
 };
 
 // 删除文章
 const handleDelete = async (articleId) => {
   try {
     const res = await deleteArticle(articleId)
-    console.log(res)
+    // console.log(res)
     if (res.data.code === 201) {
       ElMessage.success("删除文章成功")
       await fetchArticleList() // 重新获取列表

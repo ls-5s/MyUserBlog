@@ -4,6 +4,8 @@ const { writeArticle } = require('../service/writearticle');
 const { getArticleList } = require('../service/getarticle');
 const { deleteArticle } = require('../service/deletearticle');
 const { getArticleListByTitle } = require('../service/getArticleList');
+const { updateArticle } = require('../service/updataArticle');
+const { getArticleDetail } = require('../service/getArticleDetail');
 
 // 文章发布
 router.post('/write', async (req, res) => {
@@ -34,6 +36,22 @@ router.delete('/delete', async (req, res) => {
 router.get('/search', async (req, res) => {
     try {
         await getArticleListByTitle(req, res);
+    } catch (error) {
+        res.status(500).json({ message: '服务器错误', error: error.message });
+    }
+})
+// 修改文章
+router.post('/update', async (req, res) => {
+    try {
+        await updateArticle(req, res);
+    } catch (error) {
+        res.status(500).json({ message: '服务器错误', error: error.message });
+    }
+})
+// 根据id查询修改+文章详情
+router.get('/detail', async (req, res) => {
+    try {
+        await getArticleDetail(req, res);
     } catch (error) {
         res.status(500).json({ message: '服务器错误', error: error.message });
     }

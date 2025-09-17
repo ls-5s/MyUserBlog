@@ -6,7 +6,7 @@
       <el-select clearable v-model="input.type" placeholder="文章分类" style="width: 240px; height: 40px;">
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
-      <el-button type="primary" @click="ADD">发布</el-button>
+      <el-button type="primary" @click="ADD">编辑</el-button>
     </div>
     <div class="content">
       <!-- 左侧Markdown编辑器 - 改为普通textarea -->
@@ -25,22 +25,36 @@ import { ref, onMounted, watch, nextTick } from 'vue';
 import { marked } from 'marked';
 import router from '@/router/index'
 import hljs from 'highlight.js';
-import { publishArticle } from '@/api/article'
-import { useUserStore } from '@/stores/index'
 import 'github-markdown-css';
 import { ElMessage } from 'element-plus'
 import 'highlight.js/styles/github-dark.css';
+import { getArticleDetail, updateArticle } from '@/api/article'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 // 定义输入数据
 const input = ref({
   title: '',
   type: '',
+  id: route.query.id
 })
-
 const markdownContent = ref('')
 const renderedHtml = ref('');
+const articleId = route.query.id
+// 文章详情
+const add = async () => {
+  const res = await getArticleDetail(articleId)
 
-// 文章分类
+  if (res.data.code === 201) {
+
+    input.value = res.data.article
+    markdownContent.value = res.data.article.markdownContent
+    renderedHtml.value = res.data.content
+  }
+}
+
+
+
 // 文章分类
 const options = [
   // 前端细分
@@ -110,11 +124,11 @@ const syncScroll = (source) => {
     }, 10)
   })
 }
-const useStore = useUserStore()
-// 发布文章
+
+// 编辑文章
 const ADD = async () => {
-  const res = await publishArticle({
-    username: useStore.username,
+  const res = await updateArticle({
+    id: input.value.id,
     title: input.value.title,
     type: input.value.type,
     content: renderedHtml.value,
@@ -122,12 +136,14 @@ const ADD = async () => {
   })
   if (res.data.code === 201) {
     await router.push('/article/manage')
-    // console.log(res)
-    ElMessage.success('发布成功')
+
+    ElMessage.success('编辑成功')
     input.value.title = ''
     input.value.type = ''
     markdownContent.value = ''
     renderedHtml.value = ''
+  }else {
+    ElMessage.error('编辑失败')
   }
 }
 
@@ -155,6 +171,7 @@ function renderMarkdown() {
 onMounted(() => {
   setupMarked();
   renderMarkdown();
+  add()
 });
 
 // 监听内容变化，实时更新渲染

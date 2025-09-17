@@ -11,10 +11,13 @@ const AppDataSource = new DataSource({
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    synchronize:true,
+    synchronize: false,
     logging: false,
     entities: [User, Article],
     migrations: [],
     subscribers: [],
+    cli: {
+        migrationsDir: "src/migrations" // 用于 CLI 生成迁移的目录
+    }
 })
 module.exports = { AppDataSource };

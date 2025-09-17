@@ -33,3 +33,23 @@ export const searchArticle = (title) => {
     }
   })
 }
+// 根据id查询文章详情
+export const getArticleDetail = (id) => {
+  return request.get('/article/detail', {
+    params: {
+      id
+    }
+  })
+}
+// 根据id修改文章
+export const updateArticle = (data) => {
+  return request.post('/article/update', {
+
+      id: data.id,
+      title: data.title,
+      type: data.type,
+      content: data.content,
+      markdownContent: data.markdownContent
+
+  })
+}

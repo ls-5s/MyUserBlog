@@ -37,6 +37,11 @@ const router = createRouter({
       path: '/article/write',
       name: 'ArticleWrite',
       component: () => import('@/view/article/WriteArticle.vue')
+    },
+    {
+      path: '/article/update',
+      name: 'ArticleUpdate',
+      component: () => import('@/view/article/UpdataArticle.vue')
     }
 
   ]

@@ -10,7 +10,6 @@ app.use(express.json())
 app.use('/user', router)
 app.use('/article', articleRouter)
 
-// 错误处理中间件
 app.use((err, req, res, next) => {
    if (err.name === 'UnauthorizedError') {
       console.log('JWT验证失败:', err.message);
