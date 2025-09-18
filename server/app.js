@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const router = require('./router/login')
+const classRouter = require('./router/class')
 const articleRouter = require('./router/article')
 const cors = require('cors')
 const{ AppDataSource }= require('./data.source')
@@ -9,6 +10,7 @@ app.use(cors())
 app.use(express.json())
 app.use('/user', router)
 app.use('/article', articleRouter)
+app.use('/class', classRouter)
 
 app.use((err, req, res, next) => {
    if (err.name === 'UnauthorizedError') {
