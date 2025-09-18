@@ -1,212 +1,302 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { ElButton } from 'element-plus';
-import 'element-plus/es/components/button/style/css';
-import { getArticleList, deleteArticle } from '@/api/article'
-import { useUserStore } from '@/stores/index'
-import { formatDate } from '@/utils/format'
+import { ref } from 'vue';
 
-const list = ref([])
-const useStore = useUserStore()
-
-
-// 新增文章
-const add = async () => {
-  const res = await getArticleList({ username: useStore.username })
-
-  list.value = res.data.articles
-  console.log(list.value)
-}
-
-
-
-// 分页相关数据
-const total = ref(list.value.length); // 总数据条数
-const currentPage = ref(1);
-const pageSize = ref(5); // 每页最多5条数据
-
-// 计算当前页显示的文章数据
-const articles = computed(() => {
-  const startIndex = (currentPage.value - 1) * pageSize.value;
-  const endIndex = startIndex + pageSize.value;
-  return list.value.slice(startIndex, endIndex);
-});
-
-// 处理页码变更
-const handleCurrentChange = (val) => {
-  currentPage.value = val;
-  console.log('当前页码:', val);
-};
-
-// 编辑文章
-const handleEdit = (articleId) => {
-  console.log('编辑文章:', articleId);
-  // 实际项目中这里可以跳转到编辑页面或打开编辑弹窗
-};
-
-// 删除文章
-const handleDelete = async (articleId) => {
-  const res = await deleteArticle(articleId)
-  if (res.code === 201) {
-
-    ElMessage.success("删除文章成功")
-    await add()
-  } else {
-    ElMessage.error(res.message)
-  }
-};
-onMounted(() => {
-  add()
-})
+// 公告内容状态
+const announcementContent = ref('');
+const aboutMeContent = ref('');
+const hobbiesContent = ref('');
+const skillsContent = ref('');
+const learningContent = ref('');
 </script>
 <template>
-  <div class="common-layout">
-    <div class="top" @click="add">
-      文章管理
+  <div class="profile-container">
+    <!-- 页面标题 -->
+    <div class="page-header">
+      <h2 class="page-title">个人信息管理</h2>
     </div>
-    <div class="content">
-      <!-- 文章列表 - 使用框框布局 -->
-      <div class="article-list">
-        <div v-for="article in articles" :key="article.id" class="article-card">
-          <div class="article-info">
-            <h3 class="article-title">{{ article.title }}</h3>
-            <div class="article-meta">
-              <p class="article-date">{{ formatDate(article.createTime) }}</p>
-              <p class="article-views">阅读量：{{ article.views || 0 }}</p>
-            </div>
-          </div>
-          <div class="article-actions">
-            <el-button type="primary" size="small" @click="handleEdit(article.id)">
-              编辑
-            </el-button>
-            <el-button type="danger" size="small" @click="handleDelete(article.id)">
-              删除
-            </el-button>
+
+    <!-- 卡片容器 - 采用网格布局 -->
+    <div class="cards-grid">
+      <!-- 公告管理卡片 -->
+      <div class="profile-card">
+        <!-- 头部区域，包含图标和标题 -->
+        <div class="card-header">
+          <!-- 公告图标 -->
+          <svg class="card-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <h3 class="card-title">公告管理</h3>
+        </div>
+
+        <!-- 分隔线 -->
+        <div class="divider"></div>
+
+        <!-- 内容区域 -->
+        <div class="card-content">
+          <!-- 多行文本域 -->
+          <textarea v-model="announcementContent" class="content-input" placeholder="请输入公告内容" rows="4"></textarea>
+
+          <!-- 按钮区域 -->
+          <div class="button-section">
+            <el-button type="success">发布公告</el-button>
           </div>
         </div>
       </div>
 
-      <!-- 分页组件 -->
-      <div class="pagination-container">
-        <el-pagination background layout="prev, pager, next" :total="total" :current-page="currentPage"
-          :page-size="pageSize" @current-change="handleCurrentChange" />
+      <!-- 关于我卡片 -->
+      <div class="profile-card">
+        <!-- 头部区域，包含图标和标题 -->
+        <div class="card-header">
+          <!-- 用户图标 -->
+          <svg class="card-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <h3 class="card-title">关于我</h3>
+        </div>
+
+        <!-- 分隔线 -->
+        <div class="divider"></div>
+
+        <!-- 内容区域 -->
+        <div class="card-content">
+          <!-- 多行文本域 -->
+          <textarea v-model="aboutMeContent" class="content-input" placeholder="请输入关于我的介绍" rows="4"></textarea>
+
+          <!-- 按钮区域 -->
+          <div class="button-section">
+            <el-button type="primary">保存</el-button>
+          </div>
+        </div>
       </div>
+
+      <!-- 兴趣爱好卡片 -->
+      <div class="profile-card">
+        <!-- 头部区域，包含图标和标题 -->
+        <div class="card-header">
+          <!-- 爱好图标 -->
+          <svg class="card-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <h3 class="card-title">兴趣爱好</h3>
+        </div>
+
+        <!-- 分隔线 -->
+        <div class="divider"></div>
+
+        <!-- 内容区域 -->
+        <div class="card-content">
+          <!-- 多行文本域 -->
+          <textarea v-model="hobbiesContent" class="content-input" placeholder="请输入兴趣爱好" rows="4"></textarea>
+
+          <!-- 按钮区域 -->
+          <div class="button-section">
+            <el-button type="primary">保存</el-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 技术栈卡片 -->
+      <div class="profile-card">
+        <!-- 头部区域，包含图标和标题 -->
+        <div class="card-header">
+          <!-- 技术栈图标 -->
+          <svg class="card-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+          <h3 class="card-title">技术栈</h3>
+        </div>
+
+        <!-- 分隔线 -->
+        <div class="divider"></div>
+
+        <!-- 内容区域 -->
+        <div class="card-content">
+          <!-- 已掌握技术 -->
+          <div class="skill-section">
+            <label class="skill-label">已经掌握的技术栈：</label>
+            <textarea v-model="skillsContent" class="content-input" placeholder="请输入已掌握的技术" rows="3"></textarea>
+          </div>
+
+          <!-- 学习中技术 -->
+          <div class="skill-section">
+            <label class="skill-label">正在学习中：</label>
+            <textarea v-model="learningContent" class="content-input" placeholder="请输入正在学习的技术" rows="3"></textarea>
+          </div>
+
+          <!-- 按钮区域 -->
+          <div class="button-section">
+            <el-button type="primary">保存</el-button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
 <style scoped>
-/* 全局容器样式 */
-.common-layout {
-  height: 100%;
-}
-
-.top {
-  height: 50px;
-  line-height: 50px;
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #e5e5e5;
-  padding-left: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.content {
-  height: calc(100% - 60px);
+/* 主容器样式 */
+.profile-container {
+  background: #f5f7fa;
+  min-height: 100vh;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  background-color: #fff;
 }
 
-/* 文章列表容器样式 - 调整间距并隐藏滚动条 */
-.article-list {
+/* 页面标题 */
+.page-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #303133;
+  margin: 0;
+}
+
+/* 卡片网格布局 */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* 卡片样式 */
+.profile-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  border: 1px solid #e4e7ed;
+}
+
+.profile-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* 头部区域样式 */
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* 图标样式 */
+.card-icon {
+  width: 24px;
+  height: 24px;
+  color: #409eff;
+  margin-right: 8px;
+}
+
+/* 标题样式 */
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #303133;
+  margin: 0;
+}
+
+/* 分隔线样式 */
+.divider {
+  height: 1px;
+  background-color: #f0f0f0;
+  margin: 12px 0;
+}
+
+/* 内容区域样式 */
+.card-content {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  /* 减小文章卡片之间的间距 */
-  flex: 1;
-  overflow-y: auto;
-  /* 隐藏滚动条但保留滚动功能 */
-  -ms-overflow-style: none;
-  /* IE和Edge */
-  scrollbar-width: none;
-  /* Firefox */
 }
 
-/* 隐藏Chrome和Safari的滚动条 */
-.article-list::-webkit-scrollbar {
-  display: none;
+/* 技术栈部分样式 */
+.skill-section {
+  margin-bottom: 8px;
 }
 
-/* 文章卡片样式 */
-.article-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  /* 减小内边距 */
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-  background-color: #fafafa;
-  transition: all 0.3s ease;
-}
-
-.article-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-}
-
-/* 文章信息区域 */
-.article-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-right: 16px;
-}
-
-.article-title {
-  margin: 0;
-  font-size: 16px;
+.skill-label {
+  font-size: 14px;
   font-weight: 500;
-  color: #333;
-  line-height: 1.4;
-  max-width: 100%;
+  color: #606266;
+  margin-bottom: 6px;
+  display: block;
 }
 
-.article-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.article-date {
-  margin: 0;
+/* 输入框样式 */
+.content-input {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px;
+  border: 1px solid #dcdfe6;
+  border-radius: 6px;
   font-size: 14px;
-  color: #999;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
-.article-views {
-  margin: 0;
-  font-size: 14px;
-  color: #666;
+.content-input:focus {
+  outline: none;
+  border-color: #409eff;
+  box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2);
 }
 
-/* 文章操作按钮区域 */
-.article-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  /* 减小按钮之间的间距 */
-  align-items: flex-end;
-}
-
-/* 分页容器样式 - 向上移动50px */
-.pagination-container {
-
+/* 按钮区域样式 */
+.button-section {
   display: flex;
   justify-content: flex-end;
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 12px;
+  }
+
+  .page-header {
+    margin-bottom: 20px;
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .profile-card {
+    padding: 16px;
+  }
+
+  .button-section {
+    justify-content: center;
+  }
+}
+
+/* 特殊断点适配 - 双列布局优化 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 </style>
