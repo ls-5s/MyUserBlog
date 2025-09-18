@@ -4,3 +4,7 @@ import request from '@/utils/request'
 export const getLatestArticles = () => {
   return request.get('/class/latest')
 }
+// 文章数量
+export const getArticleCount = () => {
+  return request.get('/class/count')
+}

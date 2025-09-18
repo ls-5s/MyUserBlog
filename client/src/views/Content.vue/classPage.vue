@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getLatestArticles } from '@/api/class'
+import { getLatestArticles, getArticleCount } from '@/api/class'
 import { formatDate } from '@/utils/format'
 const classList = ref([
   { id: 1, name: "前端" },
@@ -62,9 +62,17 @@ const getLatest = async () => {
     // console.log(latestArticles.value)
   }
 }
-
+// 文章数量
+const articleCount = ref(0)
+const getCount = async () => {
+  const res = await getArticleCount()
+  if (res.data.code === 201) {
+    articleCount.value = res.data.data
+  }
+}
 onMounted(async () => {
   await getLatest()
+  await getCount()
 })
 </script>
 <template>
@@ -98,7 +106,7 @@ onMounted(async () => {
           <!-- 文章数量和浏览量 -->
           <div class="stats">
             <div class="stat">
-              <span class="stat-number">24</span>
+              <span class="stat-number">{{ articleCount }}</span>
               <span class="stat-label">文章</span>
             </div>
             <div class="stat-divider"></div>
