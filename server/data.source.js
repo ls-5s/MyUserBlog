@@ -2,6 +2,7 @@ require("reflect-metadata");
 const { DataSource } = require("typeorm");
 const { User } = require("./entity/User.js");
 const { Article } = require("./entity/Article.js");
+
 require('dotenv').config()
 
 const AppDataSource = new DataSource({

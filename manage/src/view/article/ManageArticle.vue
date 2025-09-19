@@ -97,6 +97,7 @@ const handleSearch = async () => {
 const refreshArticleList = async () => {
   currentPage.value = 1; // 搜索后重置当前页码
   await fetchArticleList()
+  ElMessage.success('刷新成功')
 }
 onMounted(async () => {
   await fetchArticleList()

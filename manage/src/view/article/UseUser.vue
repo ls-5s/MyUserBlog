@@ -1,12 +1,33 @@
 <script setup>
 import { ref } from 'vue';
-
+import { about } from '@/api/about';
+import { ElMessage } from 'element-plus';
 // 公告内容状态
 const announcementContent = ref('');
 const aboutMeContent = ref('');
 const hobbiesContent = ref('');
 const skillsContent = ref('');
 const learningContent = ref('');
+
+// 发布内容
+const handleAbout = async (data) => {
+  try {
+    const res = await about(data);
+    console.log(res.data);
+    if (res.data.code === 201) {
+      ElMessage.success('发布成功');
+      announcementContent.value = '';
+      aboutMeContent.value = '';
+      hobbiesContent.value = '';
+      skillsContent.value = '';
+      learningContent.value = '';
+
+    }
+  } catch (error) {
+    ElMessage.error('发布失败');
+    console.error('发布内容:', error);
+  }
+}
 </script>
 <template>
   <div class="profile-container">
@@ -35,11 +56,12 @@ const learningContent = ref('');
         <!-- 内容区域 -->
         <div class="card-content">
           <!-- 多行文本域 -->
-          <textarea v-model="announcementContent" class="content-input" placeholder="请输入公告内容" rows="4"></textarea>
+          <textarea @keyup.enter="handleAbout({ about: announcementContent, id: 1 }) " v-model=" announcementContent"
+            class="content-input" placeholder="请输入公告内容" rows="4"></textarea>
 
           <!-- 按钮区域 -->
           <div class="button-section">
-            <el-button type="success">发布公告</el-button>
+            <el-button type="success" @click="handleAbout({about: announcementContent, id: 1})">发布公告</el-button>
           </div>
         </div>
       </div>
@@ -63,11 +85,11 @@ const learningContent = ref('');
         <!-- 内容区域 -->
         <div class="card-content">
           <!-- 多行文本域 -->
-          <textarea v-model="aboutMeContent" class="content-input" placeholder="请输入关于我的介绍" rows="4"></textarea>
+          <textarea @keyup.enter="handleAbout({about: aboutMeContent, id: 2})" v-model="aboutMeContent" class="content-input" placeholder="请输入关于我的介绍" rows="4"></textarea>
 
           <!-- 按钮区域 -->
           <div class="button-section">
-            <el-button type="primary">保存</el-button>
+            <el-button type="primary" @click="handleAbout({about: aboutMeContent, id: 2})">发布内容</el-button>
           </div>
         </div>
       </div>
@@ -91,11 +113,11 @@ const learningContent = ref('');
         <!-- 内容区域 -->
         <div class="card-content">
           <!-- 多行文本域 -->
-          <textarea v-model="hobbiesContent" class="content-input" placeholder="请输入兴趣爱好" rows="4"></textarea>
+          <textarea @keyup.enter="handleAbout({about: hobbiesContent, id: 3})" v-model="hobbiesContent" class="content-input" placeholder="请输入兴趣爱好" rows="4"></textarea>
 
           <!-- 按钮区域 -->
           <div class="button-section">
-            <el-button type="primary">保存</el-button>
+            <el-button type="primary" @click="handleAbout({about: hobbiesContent, id: 3})">发布内容</el-button>
           </div>
         </div>
       </div>
@@ -132,7 +154,7 @@ const learningContent = ref('');
 
           <!-- 按钮区域 -->
           <div class="button-section">
-            <el-button type="primary">保存</el-button>
+            <el-button type="primary" @click="handleAbout({about: skillsContent, id: 4})">发布内容</el-button>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getLatestArticles, getArticleCount } from '@/api/class'
+import { getLatestArticles, getArticleCount, getAboutInfo } from '@/api/class'
 import { formatDate } from '@/utils/format'
 const classList = ref([
   { id: 1, name: "前端" },
@@ -51,6 +51,16 @@ function getClassIcon(id) {
   // 确保ID在有效范围内，如果超出则使用默认图标
   return id > 0 && id <= icons.length ? icons[id - 1] : '📁'
 }
+//
+const aboutInfo = ref({})
+// 获取公告
+const getAbout = async () => {
+  const res = await getAboutInfo(1)
+  // console.log(res.data)
+  if (res.data.code === 201) {
+    aboutInfo.value = res.data.data.about
+  }
+}
 // 最新文章5篇
 const latestArticles = ref([])
 // 最新文章5篇
@@ -73,6 +83,7 @@ const getCount = async () => {
 onMounted(async () => {
   await getLatest()
   await getCount()
+  await getAbout()
 })
 </script>
 <template>
@@ -140,7 +151,7 @@ onMounted(async () => {
           <h3 class="announcement-title">公告</h3>
         </div>
         <div class="announcement-content">
-          <p class="announcement-text">欢迎访问我的博客！最新文章已更新，包含前端开发和AI技术的内容。如有任何问题或建议，欢迎通过社交链接联系我。</p>
+          <p class="announcement-text">{{ aboutInfo }}</p>
         </div>
       </div>
 
