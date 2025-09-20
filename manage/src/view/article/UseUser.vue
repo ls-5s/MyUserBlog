@@ -6,12 +6,16 @@ import { ElMessage } from 'element-plus';
 const announcementContent = ref('');
 const aboutMeContent = ref('');
 const hobbiesContent = ref('');
-const skillsContent = ref('');
 const learningContent = ref('');
+const contactContent = ref(''); // 新增联系方式状态
 
 // 发布内容
 const handleAbout = async (data) => {
   try {
+    if (!data.about) {
+      ElMessage.error('请输入内容');
+      return;
+    }
     const res = await about(data);
     console.log(res.data);
     if (res.data.code === 201) {
@@ -19,8 +23,8 @@ const handleAbout = async (data) => {
       announcementContent.value = '';
       aboutMeContent.value = '';
       hobbiesContent.value = '';
-      skillsContent.value = '';
       learningContent.value = '';
+      contactContent.value = ''; // 清空联系方式
 
     }
   } catch (error) {
@@ -140,21 +144,44 @@ const handleAbout = async (data) => {
 
         <!-- 内容区域 -->
         <div class="card-content">
-          <!-- 已掌握技术 -->
-          <div class="skill-section">
-            <label class="skill-label">已经掌握的技术栈：</label>
-            <textarea v-model="skillsContent" class="content-input" placeholder="请输入已掌握的技术" rows="3"></textarea>
-          </div>
+
 
           <!-- 学习中技术 -->
           <div class="skill-section">
-            <label class="skill-label">正在学习中：</label>
-            <textarea v-model="learningContent" class="content-input" placeholder="请输入正在学习的技术" rows="3"></textarea>
+
+            <textarea @keyup.enter="handleAbout({about: learningContent, id: 4})" v-model="learningContent" class="content-input" placeholder="请输入正在学习的技术" rows="4"></textarea>
           </div>
 
           <!-- 按钮区域 -->
           <div class="button-section">
-            <el-button type="primary" @click="handleAbout({about: skillsContent, id: 4})">发布内容</el-button>
+            <el-button type="primary" @click="handleAbout({about: learningContent, id: 4})">发布内容</el-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 联系方式卡片 -->
+      <div class="profile-card">
+        <!-- 头部区域，包含图标和标题 -->
+        <div class="card-header">
+          <!-- 联系图标 -->
+          <svg class="card-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l11.9 11.5a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+          </svg>
+          <h3 class="card-title">联系方式</h3>
+        </div>
+
+        <!-- 分隔线 -->
+        <div class="divider"></div>
+
+        <!-- 内容区域 -->
+        <div class="card-content">
+          <!-- 多行文本域 -->
+          <textarea @keyup.enter="handleAbout({about: contactContent, id: 5})" v-model="contactContent" class="content-input" placeholder="请输入联系方式，如QQ、邮箱等" rows="4"></textarea>
+
+          <!-- 按钮区域 -->
+          <div class="button-section">
+            <el-button type="primary" @click="handleAbout({about: contactContent, id: 5})">发布内容</el-button>
           </div>
         </div>
       </div>

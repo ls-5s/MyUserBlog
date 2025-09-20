@@ -25,9 +25,14 @@
             <h3 class="card-title">联系方式</h3>
           </div>
           <div class="card-body">
-            <div class="contact-list">
-              <div class="contact-item">
-                <span class="contact-text">QQ: 2408224899</span>
+            <div class="contact-grid">
+              <div class="contact-item" v-for="(item, index) in contactInfo" :key="item">
+                <div class="contact-icon-container">
+                  <span class="contact-icon">
+                    {{ getContactIcon(index) }}
+                  </span>
+                </div>
+                <span class="contact-text">{{ item }}</span>
               </div>
             </div>
           </div>
@@ -62,18 +67,8 @@
           </div>
           <div class="card-body">
             <div class="tech-tags">
-              <span class="tag">HTML</span>
-              <span class="tag">CSS</span>
-              <span class="tag">JavaScript</span>
-              <span class="tag">Vue 2</span>
-              <span class="tag">Vue 3</span>
-              <span class="tag">Git</span>
-              <span class="tag">Axios</span>
-              <span class="tag">Uniapp</span>
-              <span class="tag">Node.js</span>
-              <span class="tag">Express</span>
-              <span class="tag">TypeORM</span>
-              <span class="tag">C/C++</span>
+              <span class="tag" v-for="item in techStack" :key="item">{{ item }}</span>
+
             </div>
           </div>
         </div>
@@ -116,15 +111,37 @@ const getAbout = async () => {
 const getHobbies = async () => {
   const res = await getAboutInfo(3)
   if (res.data.code === 201) {
-
     hobbiesInfo.value = res.data.data.about.split(',')
-    console.log(hobbiesInfo.value)
   }
+}
+// 技术栈
+const techStack = ref([])
+const getTechStack = async () => {
+  const res = await getAboutInfo(4)
+  if (res.data.code === 201) {
+    techStack.value = res.data.data.about.split(',')
+  }
+}
+// 联系方式
+const contactInfo = ref({})
+const getContactInfo = async () => {
+  const res = await getAboutInfo(5)
+  if (res.data.code === 201) {
+    contactInfo.value = res.data.data.about.split(',')
+  }
+}
+
+// 获取联系方式图标
+const getContactIcon = (index) => {
+  const icons = ['✉️', '📞', '🌐', '📱', '💬', '🔗']
+  return icons[index % icons.length]
 }
 
 onMounted(async () => {
   await getAbout()
   await getHobbies()
+  await getTechStack()
+  await getContactInfo()
 
   // 应用保存的主题
   const savedTheme = localStorage.getItem('appTheme')
@@ -322,6 +339,113 @@ body {
   box-shadow: 0 6px 18px rgba(67, 97, 238, 0.08);
 }
 
+/* 联系方式网格布局 */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+/* 联系方式项样式 */
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 联系方式图标容器 */
+.contact-icon-container {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background-color: rgba(67, 97, 238, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+/* 联系方式图标 */
+.contact-icon {
+  font-size: 20px;
+  color: var(--primary);
+}
+
+/* 联系方式文本 */
+.contact-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* 联系方式悬停效果 */
+.contact-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(67, 97, 238, 0.1);
+  border-color: var(--primary-light);
+}
+
+.contact-item:hover .contact-icon-container {
+  background-color: rgba(67, 97, 238, 0.2);
+  transform: scale(1.05);
+}
+
+/* 暗黑模式下的联系方式 */
+.dark .contact-item {
+  background-color: rgba(114, 9, 183, 0.1);
+  border: 1px solid rgba(114, 9, 183, 0.2);
+}
+
+.dark .contact-icon {
+  color: #ffffff;
+}
+
+.dark .contact-icon-container {
+  background-color: rgba(114, 9, 183, 0.2);
+}
+
+.dark .contact-item:hover {
+  background-color: rgba(114, 9, 183, 0.2);
+  box-shadow: 0 4px 12px rgba(114, 9, 183, 0.15);
+  border-color: var(--primary);
+}
+
+.dark .contact-item:hover .contact-icon-container {
+  background-color: rgba(114, 9, 183, 0.3);
+}
+
+/* 响应式调整 - 联系方式 */
+@media (max-width: 768px) {
+  .contact-grid {
+    gap: 12px;
+  }
+
+  .contact-item {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .contact-icon-container {
+    width: 36px;
+    height: 36px;
+  }
+
+  .contact-icon {
+    font-size: 16px;
+  }
+
+  .contact-text {
+    font-size: 13px;
+  }
+}
 /* 右侧内容卡片特殊样式 */
 .about-card,
 .skills-card,
@@ -338,48 +462,29 @@ body {
   border: 3px solid var(--primary-light);
 }
 
-.online-status {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  width: 16px;
-  height: 16px;
-  background-color: #4caf50;
-  border-radius: 50%;
-  border: 2px solid var(--bg);
-}
-
-.profile-name {
-  margin: 0 0 12px 0;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.profile-title {
-  margin: 0;
-  font-size: 16px;
+/* 关于我部分内容样式 */
+.about-card .card-body {
+  padding: 20px;
+  font-size: 15px;
+  line-height: 1.8;
   color: var(--text-secondary);
-  font-style: italic;
 }
 
-/* 联系信息项 */
-.contact-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.about-card .card-body p {
+  margin: 0 0 16px 0;
 }
 
-.contact-item {
-  padding: 8px 0;
+.about-card .card-body p:last-child {
+  margin-bottom: 0;
 }
 
-.contact-text {
-  font-size: 14px;
-  color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .about-card .card-body {
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
 }
 
 /* 技术标签 */
@@ -398,11 +503,32 @@ body {
   color: var(--primary);
   border: 1px solid rgba(67, 97, 238, 0.2);
   display: inline-block;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.tag::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background-color: var(--primary);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
 }
 
 .tag:hover {
   background-color: rgba(67, 97, 238, 0.2);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(67, 97, 238, 0.1);
+  border-color: var(--primary-light);
+}
+
+.tag:hover::before {
+  transform: scaleY(1);
 }
 
 /* 暗黑模式下的技术标签 */
@@ -414,6 +540,12 @@ body {
 
 .dark .tag:hover {
   background-color: rgba(114, 9, 183, 0.3);
+  box-shadow: 0 4px 12px rgba(114, 9, 183, 0.2);
+  border-color: var(--primary);
+}
+
+.dark .tag::before {
+  background-color: var(--primary-light);
 }
 
 /* 兴趣爱好列表 - 新布局 */
@@ -518,7 +650,8 @@ body {
   border-radius: 8px;
   background-color: var(--bg-secondary);
   border: 1px solid var(--border);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: all 0.3s ease;
+  overflow: hidden;
 }
 
 .hobby-list li::before {
@@ -528,6 +661,39 @@ body {
   top: 50%;
   transform: translateY(-50%);
   font-size: 14px;
+  z-index: 1;
+}
+
+.hobby-list li::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background-color: var(--secondary);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+}
+
+.hobby-list li:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(247, 37, 133, 0.1);
+  border-color: var(--secondary);
+}
+
+.hobby-list li:hover::after {
+  transform: scaleY(1);
+}
+
+/* 暗黑模式下的兴趣爱好列表项 */
+.dark .hobby-list li:hover {
+  box-shadow: 0 4px 12px rgba(114, 9, 183, 0.2);
+  border-color: var(--primary-light);
+}
+
+.dark .hobby-list li::after {
+  background-color: var(--primary-light);
 }
 
 /* 确保响应式布局下小屏幕仍显示单列 */
