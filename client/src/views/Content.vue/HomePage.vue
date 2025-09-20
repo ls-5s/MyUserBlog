@@ -3,6 +3,7 @@ import { ref, onMounted, computed, watch } from 'vue'
 import { getArticleCount, getAboutInfo, getLatestArticles, getArticleList } from '@/api/class'
 import { formatDate } from '@/utils/format'
 import { ElMessage } from 'element-plus'
+import router from '@/router'
 
 // 添加暗黑模式状态管理
 const isDarkMode = ref(false)
@@ -68,7 +69,12 @@ const getUpdate = async () => {
   const res = await getLatestArticles()
   if (res.data.code === 201) {
     update.value = res.data.data
+
   }
+}
+
+const queryid = async (id) => {
+  await router.push('/layout/article?id=' + id)
 }
 // 分页相关数据
 const total = ref(0); // 初始化为0
@@ -282,7 +288,7 @@ const initPageAnimations = () => {
         <!-- 文章列表 - 使用框框布局 -->
         <div class="article-list">
           <div v-for="article in articles" :key="article.id" class="article-card">
-            <div class="article-info">
+            <div class="article-info" @click="queryid(article.id)">
               <h3 class="article-title">{{ article.title }}</h3>
               <p class="article-date">{{ formatDate(article.createTime) }}</p>
               <p class="article-type">{{ article.type }}</p>
@@ -369,12 +375,10 @@ const initPageAnimations = () => {
         </div>
         <div class="update-list">
           <a v-for="item in update" :key="item.id" href="#" class="update-item">
-            <div class="update-content">
+            <div class="update-content" @click="queryid(item.id)">
               <div class="update-title-text">{{ item.title }}</div>
               <div class="update-time">{{ formatDate(item.createTime) }}</div>
             </div>
-            <!-- 添加箭头图标 -->
-            <span class="update-arrow">→</span>
           </a>
         </div>
       </div>
