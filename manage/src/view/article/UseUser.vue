@@ -193,7 +193,7 @@ const handleAbout = async (data) => {
 /* 主容器样式 */
 .profile-container {
   background: #f5f7fa;
-  min-height: 100vh;
+  min-height: 80vh;
   padding: 20px;
 }
 

@@ -4,7 +4,7 @@ import { ElButton, ElMessage } from 'element-plus';
 import { Search } from '@element-plus/icons-vue'
 import 'element-plus/es/components/button/style/css';
 import 'element-plus/es/components/message/style/css';
-import { getArticleList, deleteArticle, searchArticle} from '@/api/article'
+import { getArticleList, deleteArticle, searchArticle } from '@/api/article'
 import { useUserStore } from '@/stores/index'
 import { formatDate } from '@/utils/format'
 import router from '@/router/index'
@@ -105,13 +105,29 @@ onMounted(async () => {
 </script>
 <template>
   <div class="common-layout">
-    <div class="top">
-      <div class="title">文章管理 </div>
-      <el-input @keyup.enter="handleSearch" v-model="input" :prefix-icon="Search" style="max-width: 240px "
-        placeholder="请输入标题关键字" />
-      <el-button  type="primary" @click="handleSearch">查询</el-button>
-      <el-button type="success" @click="refreshArticleList">重置</el-button>
+    <!-- 现代化头部样式 -->
+    <div class="header-section">
+      <div class="header-left">
+        <h1 class="page-title">📝 文章管理</h1>
+        <p class="page-subtitle">管理和编辑您的所有文章内容</p>
+      </div>
+      <div class="header-right">
+        <div class="search-wrapper">
+          <el-input @keyup.enter="handleSearch" v-model="input" :prefix-icon="Search" placeholder="请输入文章标题关键词"
+            class="search-input" />
+          <div class="button-group">
+            <el-button type="primary" @click="handleSearch" class="search-btn">
+              <Search class="search-icon" />
+              查询
+            </el-button>
+            <el-button type="success" @click="refreshArticleList" class="reset-btn">
+              重置
+            </el-button>
+          </div>
+        </div>
+      </div>
     </div>
+
     <div class="content">
       <!-- 文章列表 - 使用框框布局 -->
       <div class="article-list">
@@ -139,42 +155,160 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+
 <style scoped>
-/* 全局容器样式 */
+/* 全局容器样式 - 减小整体高度 */
 .common-layout {
-  height: 100%;
-}
-
-.top {
+  height: 80vh;
   display: flex;
+  flex-direction: column;
+  background-color: #f8f9fa;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1400px;
+}
 
+/* 现代化头部样式 */
+.header-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 16px 32px; /* 从24px改为16px，减小垂直内边距 */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  height: 50px;
-  line-height: 50px;
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #e5e5e5;
-  padding-left: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
+  flex-wrap: wrap;
+  gap: 20px;
+  min-height: 80px; /* 从120px改为80px，降低头部高度 */
 }
 
-.top .el-input {
-  margin-left: 10px;
-}
-
-.top .el-button {
-  margin-left: 10px;
-}
-
+/* 内容区域样式 - 相应调整高度计算 */
 .content {
-  height: calc(100% - 60px);
+  height: calc(100% - 100px); /* 从140px改为100px，与头部高度保持适配 */
   padding: 20px;
   display: flex;
   flex-direction: column;
   background-color: #fff;
+  margin: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+/* 其他样式保持不变 */
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* 从8px改为4px，减小标题与副标题间距 */
+}
+
+.page-title {
+  margin: 0;
+  font-size: 24px; /* 从28px改为24px，适当减小标题大小 */
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-subtitle {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+.header-right {
+  flex: 1;
+  max-width: 600px;
+  min-width: 300px;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 200px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.search-input:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.search-input input {
+  background: transparent !important;
+  color: white !important;
+}
+
+.search-input input::placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.button-group {
+  display: flex;
+  gap: 8px;
+}
+
+.search-btn,
+.reset-btn {
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.search-btn {
+  background: white;
+  color: #667eea;
+  border: none;
+}
+
+.search-btn:hover {
+  background: #f8f9fa;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+.reset-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.reset-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.search-icon {
+  font-size: 14px;
+}
+
+.content {
+  height: calc(100% - 140px);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  margin: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 }
 
 /* 文章列表容器样式 - 调整间距并隐藏滚动条 */
@@ -246,5 +380,45 @@ onMounted(async () => {
   display: flex;
   justify-content: flex-end;
   margin-top: 16px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .header-section {
+    flex-direction: column;
+    padding: 20px 16px;
+    text-align: center;
+  }
+
+  .header-left {
+    align-items: center;
+  }
+
+  .page-title {
+    font-size: 24px;
+  }
+
+  .header-right {
+    width: 100%;
+  }
+
+  .search-wrapper {
+    justify-content: center;
+  }
+
+  .search-input {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .button-group {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .content {
+    margin: 8px;
+    padding: 16px;
+  }
 }
 </style>
