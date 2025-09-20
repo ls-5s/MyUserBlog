@@ -3,6 +3,46 @@ import { ref, onMounted, computed, watch } from 'vue'
 import { getArticleCount, getAboutInfo, getLatestArticles, getArticleList } from '@/api/class'
 import { formatDate } from '@/utils/format'
 import { ElMessage } from 'element-plus'
+
+// 添加暗黑模式状态管理
+const isDarkMode = ref(false)
+
+// 初始化暗黑模式
+const initDarkMode = () => {
+  // 检查本地存储和系统偏好
+  const savedMode = localStorage.getItem('darkMode')
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+
+  if (savedMode !== null) {
+    isDarkMode.value = savedMode === 'true'
+  } else {
+    isDarkMode.value = prefersDark
+  }
+
+  updateDarkMode()
+}
+
+// 更新暗黑模式样式
+const updateDarkMode = () => {
+  if (isDarkMode.value) {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
+  // 保存模式到本地存储
+  localStorage.setItem('darkMode', isDarkMode.value.toString())
+}
+
+// 切换暗黑模式
+const toggleDarkMode = () => {
+  isDarkMode.value = !isDarkMode.value
+  updateDarkMode()
+}
+
+// 监听暗黑模式变化
+watch(isDarkMode, updateDarkMode)
+
+// 现有代码...
 const count = ref('')
 const animatedCount = ref(0)
 const readingCount = ref(0)
@@ -104,9 +144,21 @@ const handleScrollAnimation = () => {
       element.style.transform = 'translateY(0)'
     }
   })
-}
+
+  // 添加滚动时的视差效果
+  const scrollY = window.scrollY;
+  const particles = document.querySelectorAll('#particles-container div');
+  particles.forEach((particle, index) => {
+    // 根据索引和滚动距离创建不同的视差效果
+    const speed = 0.02 + (index % 3) * 0.01;
+    particle.style.transform = `translateY(${scrollY * speed}px)`;
+  });
+};
+
 // 添加滚动事件监听
 onMounted(() => {
+  // 初始化暗黑模式
+  initDarkMode()
   // 页面载入时的淡入效果
   document.body.style.opacity = '1'
   getCount()
@@ -123,6 +175,8 @@ onMounted(() => {
   handleScrollAnimation()
   // 创建背景粒子效果
   createBackgroundParticles()
+  // 添加新的初始化动画
+  initPageAnimations();
 })
 // 创建背景粒子效果
 const createBackgroundParticles = () => {
@@ -138,8 +192,8 @@ const createBackgroundParticles = () => {
   container.style.pointerEvents = 'none'
   container.style.zIndex = '-1'
   document.body.appendChild(container)
-  // 创建20个粒子
-  for (let i = 0; i < 20; i++) {
+  // 创建更多粒子并增加颜色变化
+  for (let i = 0; i < 30; i++) {
     const particle = document.createElement('div')
     // 随机大小、位置和透明度
     const size = Math.random() * 5 + 1
@@ -147,26 +201,84 @@ const createBackgroundParticles = () => {
     const y = Math.random() * 100
     const opacity = Math.random() * 0.5 + 0.1
     const delay = Math.random() * 5
+
+    // 随机颜色 - 使用主色调的变体
+    const colors = ['#1890ff', '#722ed1', '#eb2f96', '#52c41a'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
     // 设置样式
     Object.assign(particle.style, {
       position: 'absolute',
       width: `${size}px`,
       height: `${size}px`,
-      backgroundColor: '#1890ff',
+      backgroundColor: color,
       borderRadius: '50%',
       left: `${x}%`,
       top: `${y}%`,
       opacity: opacity,
-      animation: `float ${Math.random() * 10 + 10}s ease-in-out ${delay}s infinite`
+      animation: `float ${Math.random() * 10 + 10}s ease-in-out ${delay}s infinite`,
+      boxShadow: `0 0 ${size * 3}px ${color}40` // 添加发光效果
     })
     container.appendChild(particle)
   }
 }
+
+// 添加鼠标跟踪效果函数
+const createMouseTrail = () => {
+  // 仅在桌面设备添加鼠标跟踪
+  if (window.innerWidth > 768) {
+    document.addEventListener('mousemove', (e) => {
+      // 创建鼠标尾迹粒子
+      const trailParticle = document.createElement('div');
+      trailParticle.classList.add('mouse-trail');
+      trailParticle.style.cssText = `
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        background: radial-gradient(circle, #1890ff, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        left: ${e.clientX - 4}px;
+        top: ${e.clientY - 4}px;
+        opacity: 0.7;
+        animation: trail-fade 1s ease-out forwards;
+      `;
+      document.body.appendChild(trailParticle);
+
+      // 移除已完成动画的粒子
+      setTimeout(() => {
+        trailParticle.remove();
+      }, 1000);
+    });
+  }
+};
+
+// 添加页面加载时的初始化动画
+const initPageAnimations = () => {
+  // 添加鼠标跟踪效果
+  createMouseTrail();
+
+  // 添加全局CSS变量，用于主题切换动画
+  document.documentElement.style.setProperty('--primary-color', '#1890ff');
+  document.documentElement.style.setProperty('--secondary-color', '#722ed1');
+};
+
+// 原有的onMounted已整合到上面
 </script>
 <template>
   <div class="box">
+    <!-- 暗黑模式切换按钮 -->
+    <button class="dark-mode-toggle" @click="toggleDarkMode" :class="{ 'dark': isDarkMode }" title="切换暗黑模式">
+      <span v-if="!isDarkMode" class="sun-icon">☀️</span>
+      <span v-else class="moon-icon">🌙</span>
+    </button>
+
     <div class="left">
       <div class="content">
+        <!-- 左侧顶部装饰 -->
+        <div class="left-decoration"></div>
+
         <!-- 文章列表 - 使用框框布局 -->
         <div class="article-list">
           <div v-for="article in articles" :key="article.id" class="article-card">
@@ -174,7 +286,14 @@ const createBackgroundParticles = () => {
               <h3 class="article-title">{{ article.title }}</h3>
               <p class="article-date">{{ formatDate(article.createTime) }}</p>
               <p class="article-type">{{ article.type }}</p>
+              <!-- 添加阅读量信息 -->
+              <!-- <div class="article-meta">
+                <span class="read-count">{{ Math.floor(Math.random() * 500) + 100 }} 阅读</span>
+                <span class="comment-count">{{ Math.floor(Math.random() * 20) }} 评论</span>
+              </div> -->
             </div>
+            <!-- 添加文章卡片的装饰元素 -->
+            <div class="article-decoration"></div>
           </div>
         </div>
 
@@ -254,6 +373,8 @@ const createBackgroundParticles = () => {
               <div class="update-title-text">{{ item.title }}</div>
               <div class="update-time">{{ formatDate(item.createTime) }}</div>
             </div>
+            <!-- 添加箭头图标 -->
+            <span class="update-arrow">→</span>
           </a>
         </div>
       </div>
@@ -273,6 +394,42 @@ body {
   opacity: 0;
   transition: opacity 0.8s ease-out;
   background-color: #f8f9fa;
+}
+
+/* 暗黑模式切换按钮 */
+.dark-mode-toggle {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background-color: #ffffff;
+  color: #333;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark-mode-toggle:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode-toggle.dark {
+  background-color: #2d3748;
+  color: #e2e8f0;
+}
+
+/* 暗黑模式基础样式 */
+.dark body {
+  background-color: #1a202c;
 }
 
 .box {
@@ -295,6 +452,12 @@ body {
   overflow: hidden;
 }
 
+/* 暗黑模式下左侧区域样式 */
+.dark .left {
+  background-color: #2d3748;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
 /* 左侧区域装饰效果 */
 .left::after {
   content: '';
@@ -308,10 +471,30 @@ body {
   z-index: 0;
 }
 
+.dark .left::after {
+  background: radial-gradient(circle, rgba(24, 144, 255, 0.08), transparent 70%);
+}
+
+/* 新增左侧装饰元素 */
+.left-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(90deg, #1890ff, #722ed1, #eb2f96, #52c41a);
+  border-radius: 12px 12px 0 0;
+  z-index: 10;
+}
+
 .classPage {
   font-size: 20px;
   font-weight: 600;
   color: #333;
+}
+
+.dark .classPage {
+  color: #e2e8f0;
 }
 
 /* 左侧文章列表区域样式 */
@@ -331,7 +514,7 @@ body {
   margin-bottom: 30px;
 }
 
-/* 文章卡片样式 */
+/* 文章卡片样式 - 增强版 */
 .article-card {
   background: #ffffff;
   border-radius: 16px;
@@ -343,13 +526,28 @@ body {
   overflow: hidden;
   opacity: 0;
   transform: translateY(20px);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
-/* 卡片悬浮效果 */
+/* 暗黑模式下文章卡片样式 */
+.dark .article-card {
+  background: #374151;
+  border-color: #4b5563;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* 卡片悬浮效果 - 增强版 */
 .article-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.06);
   border-color: #1890ff;
+}
+
+.dark .article-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 /* 卡片装饰条 */
@@ -370,6 +568,33 @@ body {
   transform: scaleY(1);
 }
 
+/* 文章装饰元素 */
+.article-decoration {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  opacity: 0.1;
+  transition: opacity 0.3s ease;
+}
+
+.article-card:hover .article-decoration {
+  opacity: 0.2;
+}
+
+.article-decoration::before {
+  content: '';
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px dashed #1890ff;
+  animation: rotate 15s linear infinite;
+}
+
+.dark .article-decoration::before {
+  border-color: #4299e1;
+}
+
 /* 文章信息样式 */
 .article-info {
   display: flex;
@@ -377,6 +602,7 @@ body {
   gap: 12px;
   position: relative;
   z-index: 1;
+  flex: 1;
 }
 
 /* 文章标题样式 */
@@ -389,6 +615,11 @@ body {
   transition: color 0.3s ease;
   position: relative;
   display: inline-block;
+  max-width: 100%;
+}
+
+.dark .article-title {
+  color: #e2e8f0;
 }
 
 .article-title::after {
@@ -406,6 +637,10 @@ body {
   color: #1890ff;
 }
 
+.dark .article-card:hover .article-title {
+  color: #60a5fa;
+}
+
 .article-card:hover .article-title::after {
   width: 100%;
 }
@@ -418,6 +653,10 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.dark .article-date {
+  color: #a0aec0;
 }
 
 .article-date::before {
@@ -438,6 +677,11 @@ body {
   overflow: hidden;
 }
 
+.dark .article-type {
+  color: #cbd5e0;
+  background-color: #4a5568;
+}
+
 .article-type::after {
   content: '';
   position: absolute;
@@ -454,8 +698,57 @@ body {
   color: #1890ff;
 }
 
+.dark .article-card:hover .article-type {
+  background-color: #2d3748;
+  color: #60a5fa;
+}
+
+.dark .article-card:hover .article-type::after {
+  background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.2), transparent);
+}
+
 .article-card:hover .article-type::after {
   left: 100%;
+}
+
+/* 文章元信息样式 */
+.article-meta {
+  display: flex;
+  gap: 20px;
+  margin-top: 8px;
+}
+
+.read-count,
+.comment-count {
+  font-size: 13px;
+  color: #999;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.3s ease;
+}
+
+.dark .read-count,
+.dark .comment-count {
+  color: #a0aec0;
+}
+
+.read-count::before {
+  content: '👁️';
+}
+
+.comment-count::before {
+  content: '💬';
+}
+
+.article-card:hover .read-count,
+.article-card:hover .comment-count {
+  color: #1890ff;
+}
+
+.dark .article-card:hover .read-count,
+.dark .article-card:hover .comment-count {
+  color: #60a5fa;
 }
 
 /* 分页容器样式 */
@@ -466,6 +759,42 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.dark .pagination-container {
+  border-top-color: #4a5568;
+}
+
+/* 为Element Plus分页按钮添加动画效果 */
+:deep(.el-pagination__item) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-pagination__item:hover:not(.is-disabled)) {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+}
+
+.dark :deep(.el-pagination__item:hover:not(.is-disabled)) {
+  box-shadow: 0 2px 8px rgba(96, 165, 250, 0.3);
+}
+
+:deep(.el-pagination__item.is-active) {
+  transform: scale(1.1);
+  box-shadow: 0 2px 10px rgba(24, 144, 255, 0.3);
+}
+
+.dark :deep(.el-pagination__item.is-active) {
+  box-shadow: 0 2px 10px rgba(96, 165, 250, 0.4);
+  background-color: #4299e1;
+  border-color: #4299e1;
+}
+
+/* 暗黑模式下分页按钮文字颜色 */
+.dark :deep(.el-pagination__item) {
+  color: #cbd5e0;
+  border-color: #4a5568;
+  background-color: #2d3748;
 }
 
 /* 右侧区域样式 */
@@ -499,6 +828,11 @@ body {
   overflow: hidden;
 }
 
+.dark .right-top {
+  background-color: #2d3748;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
 /* 装饰性背景元素 */
 .right-top-decoration {
   position: absolute;
@@ -508,6 +842,10 @@ body {
   height: 100%;
   background: radial-gradient(circle at top right, rgba(24, 144, 255, 0.05), transparent 60%);
   z-index: 0;
+}
+
+.dark .right-top-decoration {
+  background: radial-gradient(circle at top right, rgba(96, 165, 250, 0.1), transparent 60%);
 }
 
 /* 渐变顶部边框 */
@@ -529,6 +867,10 @@ body {
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
+.dark .right-top:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
 /* 头像样式优化 */
 .right-img {
   width: 120px;
@@ -541,6 +883,12 @@ body {
   transition: all 0.3s ease;
   position: relative;
   z-index: 2;
+  animation: pulse-soft 3s ease-in-out infinite;
+}
+
+.dark .right-img {
+  border-color: #4a5568;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 /* 头像悬停效果 */
@@ -548,6 +896,11 @@ body {
   border-color: #1890ff;
   transform: translateY(-5px) scale(1.03);
   box-shadow: 0 8px 25px rgba(24, 144, 255, 0.25);
+}
+
+.dark .right-img:hover {
+  border-color: #60a5fa;
+  box-shadow: 0 8px 25px rgba(96, 165, 250, 0.35);
 }
 
 /* 头像图片 */
@@ -604,12 +957,23 @@ body {
   background-clip: text;
 }
 
+.dark .profile-title {
+  background: linear-gradient(90deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* 个人描述 */
 .profile-description {
   font-size: 14px;
   color: #666;
   margin-bottom: 20px;
   line-height: 1.5;
+}
+
+.dark .profile-description {
+  color: #a0aec0;
 }
 
 /* 统计数据容器 */
@@ -623,6 +987,11 @@ body {
   border: 1px solid #e8e8e8;
 }
 
+.dark .stats-container {
+  background-color: #4a5568;
+  border-color: #2d3748;
+}
+
 /* 统计项 */
 .stat-item {
   display: flex;
@@ -633,6 +1002,10 @@ body {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+}
+
+.dark .stat-item {
+  background-color: #2d3748;
 }
 
 /* 统计项装饰 */
@@ -648,6 +1021,10 @@ body {
   transition: transform 0.3s ease;
 }
 
+.dark .stat-item::before {
+  background: linear-gradient(90deg, #60a5fa, #a78bfa);
+}
+
 /* 统计项悬浮效果 */
 .stat-item:hover {
   background-color: #ffffff;
@@ -655,375 +1032,280 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
+.dark .stat-item:hover {
+  background-color: #374151;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
 .stat-item:hover::before {
   transform: scaleX(1);
 }
 
-/* 统计数字 */
+/* 统计数字和标签 */
 .stat-number {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
-  color: #333;
-  line-height: 1.2;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.5px;
+  color: #1890ff;
   margin-bottom: 4px;
-  background: linear-gradient(90deg, #1890ff, #722ed1);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
-/* 统计标签 */
+.dark .stat-number {
+  color: #60a5fa;
+}
+
 .stat-label {
-  font-size: 13px;
-  color: #666;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 500;
+  font-size: 12px;
+  color: #999;
+  text-align: center;
 }
 
-/* 社交媒体链接样式优化 */
+.dark .stat-label {
+  color: #a0aec0;
+}
+
+/* 社交媒体链接 */
 .right-top-bottom {
   display: flex;
-  gap: 12px;
-  margin-top: 8px;
   justify-content: center;
+  gap: 20px;
   position: relative;
   z-index: 2;
+  width: 100%;
 }
 
-/* 社交链接基础样式 */
 .social-link {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
-  background: linear-gradient(145deg, #ffffff, #f0f0f0);
+  padding: 8px 16px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
   color: #666;
   text-decoration: none;
-  border-radius: 25px;
-  font-size: 14px;
-  font-weight: 500;
   transition: all 0.3s ease;
-  border: 1px solid #e8e8e8;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.05), -2px -2px 6px rgba(255, 255, 255, 0.8);
-  position: relative;
-  overflow: hidden;
+  font-size: 14px;
 }
 
-/* 社交图标 */
-.social-icon img {
-  width: 24px;
-  height: 24px;
-  vertical-align: middle;
-  border-radius: 50%;
-  overflow: hidden;
-  transition: transform 0.3s ease;
-  background: #fff;
-  padding: 2px;
+.dark .social-link {
+  background-color: #4a5568;
+  color: #cbd5e0;
 }
 
-/* 社交链接悬浮效果 */
 .social-link:hover {
-  background: linear-gradient(145deg, #1890ff, #722ed1);
-  color: #ffffff;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(24, 144, 255, 0.3);
-  border-color: #1890ff;
+  background-color: #e6f7ff;
+  color: #1890ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
+}
+
+.dark .social-link:hover {
+  background-color: #2d3748;
+  color: #60a5fa;
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.25);
+}
+
+.social-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: grayscale(100%);
+  transition: filter 0.3s ease;
+}
+
+.dark .social-icon img {
+  filter: grayscale(100%) brightness(150%);
 }
 
 .social-link:hover .social-icon img {
-  transform: scale(1.2) rotate(5deg);
-  background: #fff;
+  filter: grayscale(0%);
 }
 
-/* 公告区域 - 优化版 */
+.dark .social-link:hover .social-icon img {
+  filter: grayscale(0%) brightness(100%);
+}
+
+/* 公告区域样式 */
 .right-z-top {
   background-color: #ffffff;
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08), 0 3px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
-  border: 1px solid #f0f0f0;
 }
 
-/* 卡片悬浮效果 */
-.right-z-top:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+.dark .right-z-top {
+  background-color: #2d3748;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* 装饰性背景 */
-.right-z-top::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, #ff9a9e, #fad0c4);
-  border-radius: 16px 16px 0 0;
-}
-
-/* 公告头部 */
 .notice-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid #f8f9fa;
-  position: relative;
+  margin-bottom: 12px;
 }
 
-/* 公告图标 */
 .notice-icon {
-  font-size: 20px;
-  animation: pulse 2s infinite;
-}
-
-/* 图标脉冲动画 */
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.1);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-/* 公告标题 */
-.notice-title {
   font-size: 18px;
-  font-weight: 700;
+}
+
+.notice-title {
+  font-size: 16px;
+  font-weight: 600;
   color: #333;
   margin: 0;
-  padding: 0;
-  border: none;
-  background: linear-gradient(90deg, #ff758c, #ff7eb3);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
-/* 公告内容 */
+.dark .notice-title {
+  color: #e2e8f0;
+}
+
 .notice-content {
   font-size: 14px;
   color: #666;
   line-height: 1.6;
-  padding: 8px 12px;
-  background-color: #fff5f5;
+  padding: 12px;
+  background-color: #f8f9fa;
   border-radius: 8px;
-  border-left: 3px solid #ff758c;
-  transition: all 0.3s ease;
   position: relative;
-  z-index: 1;
 }
 
-/* 内容悬浮效果 */
-.notice-content:hover {
-  background-color: #fff0f0;
-  transform: translateX(4px);
+.dark .notice-content {
+  color: #a0aec0;
+  background-color: #4a5568;
 }
 
-/* 装饰性点缀 */
-.notice-content::after {
-  content: '';
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  width: 20px;
-  height: 20px;
-  background: radial-gradient(circle, #ff758c 0%, transparent 70%);
-  border-radius: 50%;
-  opacity: 0.2;
-  z-index: -1;
-}
-
-/* 最近更新区域 - 优化版 */
+/* 最近更新区域样式 */
 .right-bottom {
   background-color: #ffffff;
   border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08), 0 3px 6px rgba(0, 0, 0, 0.04);
-  flex-grow: 1;
-  border: 1px solid #f0f0f0;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-/* 卡片悬浮效果 */
-.right-bottom:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+.dark .right-bottom {
+  background-color: #2d3748;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* 装饰性顶部边框 */
-.right-bottom::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, #52c41a, #1890ff);
-  border-radius: 16px 16px 0 0;
-}
-
-/* 更新标题区域 */
 .update-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  position: relative;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
-/* 更新图标 */
 .update-icon {
-  font-size: 20px;
-  animation: pulse 2s infinite;
+  font-size: 18px;
 }
 
-/* 图标脉冲动画 */
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.1);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-/* 更新标题文本 */
 .update-title {
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 600;
   color: #333;
   margin: 0;
-  background: linear-gradient(90deg, #52c41a, #1890ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
-/* 更新列表 */
+.dark .update-title {
+  color: #e2e8f0;
+}
+
 .update-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-/* 更新条目 */
 .update-item {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 14px 16px;
-  background-color: #fafafa;
-  border-radius: 12px;
+  align-items: center;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
   text-decoration: none;
-  color: inherit;
   transition: all 0.3s ease;
-  border: 1px solid transparent;
-  position: relative;
-  overflow: hidden;
+  border-left: 3px solid transparent;
 }
 
-/* 条目装饰性元素 */
-.update-item::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: linear-gradient(to bottom, #52c41a, #1890ff);
-  border-radius: 12px 0 0 12px;
-  transform: scaleY(0);
-  transition: transform 0.3s ease;
+.dark .update-item {
+  background-color: #4a5568;
 }
 
-/* 条目悬浮效果 */
 .update-item:hover {
-  background-color: #ffffff;
-  transform: translateX(5px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  border-color: #e6f7ff;
+  background-color: #e6f7ff;
+  transform: translateX(8px);
+  border-left-color: #1890ff;
 }
 
-.update-item:hover::before {
-  transform: scaleY(1);
+.dark .update-item:hover {
+  background-color: #374151;
+  border-left-color: #60a5fa;
 }
 
-/* 条目内容 */
 .update-content {
   flex: 1;
   min-width: 0;
 }
 
-/* 文章标题 */
 .update-title-text {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: #333;
-  line-height: 1.4;
-  margin-bottom: 4px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: color 0.3s ease;
+  margin-bottom: 4px;
 }
 
-.update-item:hover .update-title-text {
-  color: #1890ff;
+.dark .update-title-text {
+  color: #e2e8f0;
 }
 
-/* 创建时间 */
 .update-time {
   font-size: 12px;
   color: #999;
-  font-weight: 400;
 }
 
-/* 箭头图标 */
+.dark .update-time {
+  color: #a0aec0;
+}
+
 .update-arrow {
   font-size: 14px;
-  color: #ccc;
-  margin-left: 10px;
+  color: #999;
   transition: all 0.3s ease;
 }
 
 .update-item:hover .update-arrow {
   color: #1890ff;
-  transform: translateX(3px);
+  transform: translateX(4px);
 }
 
-/* 空状态样式 */
-.update-list:empty::after {
-  content: '暂无更新内容';
-  display: block;
-  text-align: center;
-  padding: 40px 20px;
-  color: #999;
-  font-size: 14px;
+.dark .update-item:hover .update-arrow {
+  color: #60a5fa;
 }
 
-/* 粒子浮动动画 */
+/* 动画效果定义 */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes float {
 
   0%,
@@ -1031,88 +1313,111 @@ body {
     transform: translateY(0) translateX(0);
   }
 
-  25% {
-    transform: translateY(-15px) translateX(5px);
-  }
-
   50% {
-    transform: translateY(0) translateX(10px);
-  }
-
-  75% {
-    transform: translateY(15px) translateX(5px);
+    transform: translateY(-20px) translateX(10px);
   }
 }
 
-/* 响应式优化 */
-@media (max-width: 1680px) {
+@keyframes pulse-soft {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes trail-fade {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+/* 响应式适配 */
+@media (max-width: 1700px) {
   .box {
-    width: 90%;
+    width: 95%;
   }
 }
 
 @media (max-width: 1200px) {
   .box {
     flex-direction: column;
+    gap: 20px;
   }
 
   .right {
     margin-left: 0;
-    margin-top: 20px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .right-top,
+  .right-z-top,
+  .right-bottom {
+    flex: 1;
+    min-width: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .box {
+    padding: 10px;
   }
 
   .left,
   .right-top,
   .right-z-top,
   .right-bottom {
-    border-radius: 12px;
-  }
-}
-
-@media (max-width: 768px) {
-  .right-z-top {
     padding: 16px;
   }
 
-  .notice-title {
+  .article-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .article-decoration {
+    display: none;
+  }
+
+  .right {
+    flex-direction: column;
+  }
+
+  .dark-mode-toggle {
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
     font-size: 16px;
-  }
-
-  .notice-content {
-    font-size: 13px;
-  }
-
-  .right-bottom {
-    padding: 20px 16px;
-  }
-
-  .update-title {
-    font-size: 18px;
-  }
-
-  .update-item {
-    padding: 12px 14px;
-  }
-
-  .update-title-text {
-    font-size: 13px;
   }
 }
 
-@media (max-width: 480px) {
-  .right-bottom {
-    padding: 16px 12px;
-  }
+/* 暗黑模式下的动画和过渡效果增强 */
+.dark .article-card,
+.dark .right-top,
+.dark .right-z-top,
+.dark .right-bottom {
+  transition: all 0.4s ease;
+}
 
-  .update-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
+/* 暗黑模式下鼠标尾迹效果 */
+.dark .mouse-trail {
+  background: radial-gradient(circle, #60a5fa, transparent 70%);
+}
 
-  .update-arrow {
-    margin-left: 0;
-    align-self: flex-end;
-  }
+/* 暗黑模式下背景粒子效果增强 */
+.dark #particles-container div {
+  opacity: 0.2;
 }
 </style>
