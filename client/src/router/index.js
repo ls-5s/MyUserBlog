@@ -11,14 +11,16 @@ const router = createRouter({
       path: '/layout/home',
       component: () => import('@/views/Content.vue/HomePage.vue'),
     }, {
-      path: 'layout/about',
+      path: '/layout/about',
       component: () => import('@/views/Content.vue/aboutPage.vue'),
     },{
-      path: 'layout/class',
+      path: '/layout/class',
       component: () => import('@/views/Content.vue/classPage.vue'),
-    }
-  ],
-  }],
+      }, {
+        path: '/layout/article',
+        component: () => import('@/views/Content.vue/articlePage.vue'),
+      }
+    ] }]
 })
 
 export default router

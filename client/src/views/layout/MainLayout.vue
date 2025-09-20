@@ -1,5 +1,4 @@
 <template>
-
   <div class="common-layout">
     <el-container>
       <el-header>
@@ -17,7 +16,7 @@
           <el-icon class="mr-2">
             <InfoFilled /><!-- Element UI 内置的信息/关于填充图标 -->
           </el-icon>
-          关于
+          我的
         </el-link>
         <el-link type="primary" href="/layout/class" class="nav-link" :underline="false">
           <!-- Class 图标 + 文字 -->
@@ -38,10 +37,9 @@
       <el-main>
         <router-view></router-view>
       </el-main>
-      <el-footer>Footer</el-footer>
+      <!-- <el-footer>Footer</el-footer> -->
     </el-container>
   </div>
-
 </template>
 
 <script setup>

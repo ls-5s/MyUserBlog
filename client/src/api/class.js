@@ -15,3 +15,19 @@ export const getAboutInfo = (id) => {
     params: { id }  // 使用对象属性简写
   })
 }
+// 根据id查询文章详情
+export const getArticleDetail = (id) => {
+  return request.get('/article/detail', {
+    params: {
+      id
+    }
+  })
+}
+// 文章列表(获取个人所以文章)
+export const getArticleList = (data) => {
+  return request.get('/article/list', {
+    params: {
+      username: data.username
+    }
+  })
+}
