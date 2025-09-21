@@ -25,7 +25,7 @@
             <h3 class="card-title">联系方式</h3>
           </div>
           <div class="card-body">
-            <div class="contact-grid">
+            <div class="contact-grid" v-if="contactInfo && contactInfo.length > 0">
               <div class="contact-item" v-for="(item, index) in contactInfo" :key="item">
                 <div class="contact-icon-container">
                   <span class="contact-icon">
@@ -34,6 +34,10 @@
                 </div>
                 <span class="contact-text">{{ item }}</span>
               </div>
+            </div>
+            <div class="empty-state" v-else>
+              <p class="empty-text">暂无联系方式</p>
+              <p class="empty-subtext">联系方式信息正在完善中</p>
             </div>
           </div>
         </div>
@@ -51,7 +55,13 @@
             <h3 class="card-title">关于我</h3>
           </div>
           <div class="card-body">
-            {{ aboutInfo }}
+            <div v-if="aboutInfo && Object.keys(aboutInfo).length > 0">
+              {{ aboutInfo }}
+            </div>
+            <div class="empty-state" v-else>
+              <p class="empty-text">暂无个人介绍</p>
+              <p class="empty-subtext">个人介绍正在完善中</p>
+            </div>
           </div>
         </div>
 
@@ -66,9 +76,12 @@
             <h3 class="card-title">技术栈</h3>
           </div>
           <div class="card-body">
-            <div class="tech-tags">
+            <div class="tech-tags" v-if="techStack && techStack.length > 0">
               <span class="tag" v-for="item in techStack" :key="item">{{ item }}</span>
-
+            </div>
+            <div class="empty-state" v-else>
+              <p class="empty-text">暂无技术栈信息</p>
+              <p class="empty-subtext">技术栈信息正在完善中</p>
             </div>
           </div>
         </div>
@@ -82,9 +95,13 @@
             <h3 class="card-title">兴趣爱好</h3>
           </div>
           <div class="card-body">
-            <ul class="hobby-list">
+            <ul class="hobby-list" v-if="hobbiesInfo && hobbiesInfo.length > 0">
               <li v-for="item in hobbiesInfo" :key="item">{{ item }}</li>
             </ul>
+            <div class="empty-state" v-else>
+              <p class="empty-text">暂无兴趣爱好信息</p>
+              <p class="empty-subtext">兴趣爱好信息正在完善中</p>
+            </div>
           </div>
         </div>
       </div>
@@ -151,6 +168,55 @@ onMounted(async () => {
   }
 })
 </script>
+
+<style scoped>
+/* 全局样式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 其他现有样式保持不变 */
+
+/* 暂无数据状态样式 - 调整为更小巧的版本并移除图标相关样式 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 15px;
+  text-align: center;
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px dashed var(--border);
+}
+
+.empty-text {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.empty-subtext {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* 暗黑模式下的暂无数据样式 */
+.dark .empty-state {
+  background-color: rgba(114, 9, 183, 0.1);
+  border-color: rgba(114, 9, 183, 0.3);
+}
+
+.dark .empty-text {
+  color: var(--text);
+}
+
+/* 其他现有样式保持不变 */
+</style>
 
 <style>
 /* 全局样式重置 */
@@ -283,7 +349,6 @@ body {
   position: relative;
   overflow: hidden;
 }
-
 /* 卡片装饰效果 - 为左侧卡片添加左侧装饰条 */
 .left-column .card {
   border-left: 4px solid var(--primary);

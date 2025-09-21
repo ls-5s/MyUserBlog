@@ -21,7 +21,7 @@
         <el-link type="primary" href="/layout/class" class="nav-link" :underline="false">
           <!-- Class 图标 + 文字 -->
           <el-icon class="mr-2">
-            <Filter/><!-- Element UI 内置的班级填充图标 -->
+            <Filter /><!-- Element UI 内置的班级填充图标 -->
           </el-icon>
           分类
         </el-link>

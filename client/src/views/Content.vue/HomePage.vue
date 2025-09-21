@@ -5,19 +5,19 @@ import { formatDate } from '@/utils/format'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
 
-// 添加暗黑模式状态管理
+// 添加暗黑模式状态管理 - 只保留一套定义
 const isDarkMode = ref(false)
+const htmlEl = document.documentElement  // 获取根标签 <html>
 
-// 初始化暗黑模式
+// 初始化暗黑模式 - 与导航栏保持一致
 const initDarkMode = () => {
-  // 检查本地存储和系统偏好
-  const savedMode = localStorage.getItem('darkMode')
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+  // 检查本地存储，与导航栏使用相同的键名
+  const savedTheme = localStorage.getItem('appTheme')
 
-  if (savedMode !== null) {
-    isDarkMode.value = savedMode === 'true'
+  if (savedTheme === 'dark') {
+    isDarkMode.value = true
   } else {
-    isDarkMode.value = prefersDark
+    isDarkMode.value = false
   }
 
   updateDarkMode()
@@ -26,12 +26,12 @@ const initDarkMode = () => {
 // 更新暗黑模式样式
 const updateDarkMode = () => {
   if (isDarkMode.value) {
-    document.documentElement.classList.add('dark')
+    htmlEl.classList.add('dark')
   } else {
-    document.documentElement.classList.remove('dark')
+    htmlEl.classList.remove('dark')
   }
-  // 保存模式到本地存储
-  localStorage.setItem('darkMode', isDarkMode.value.toString())
+  // 保存模式到本地存储 - 使用与导航栏相同的键名
+  localStorage.setItem('appTheme', isDarkMode.value ? 'dark' : 'light')
 }
 
 // 切换暗黑模式
@@ -43,7 +43,6 @@ const toggleDarkMode = () => {
 // 监听暗黑模式变化
 watch(isDarkMode, updateDarkMode)
 
-// 现有代码...
 const count = ref('')
 const animatedCount = ref(0)
 const readingCount = ref(0)
@@ -98,7 +97,7 @@ const fetchArticleList = async () => {
     }, 100)
   } catch (error) {
     console.error('获取文章列表失败:', error);
-    ElMessage.error('获取文章列表失败');
+    // ElMessage.error('获取文章列表失败');
   }
 }
 // 计算当前页显示的文章数据
@@ -287,19 +286,24 @@ const initPageAnimations = () => {
 
         <!-- 文章列表 - 使用框框布局 -->
         <div class="article-list">
-          <div v-for="article in articles" :key="article.id" class="article-card">
-            <div class="article-info" @click="queryid(article.id)">
-              <h3 class="article-title">{{ article.title }}</h3>
-              <p class="article-date">{{ formatDate(article.createTime) }}</p>
-              <p class="article-type">{{ article.type }}</p>
-              <!-- 添加阅读量信息 -->
-              <!-- <div class="article-meta">
-                <span class="read-count">{{ Math.floor(Math.random() * 500) + 100 }} 阅读</span>
-                <span class="comment-count">{{ Math.floor(Math.random() * 20) }} 评论</span>
-              </div> -->
+          <!-- 当有文章时显示文章列表 -->
+          <template v-if="articles.length > 0">
+            <div v-for="article in articles" :key="article.id" class="article-card">
+              <div class="article-info" @click="queryid(article.id)">
+                <h3 class="article-title">{{ article.title }}</h3>
+                <p class="article-date">{{ formatDate(article.createTime) }}</p>
+                <p class="article-type">{{ article.type }}</p>
+              </div>
+              <!-- 添加文章卡片的装饰元素 -->
+              <div class="article-decoration"></div>
             </div>
-            <!-- 添加文章卡片的装饰元素 -->
-            <div class="article-decoration"></div>
+          </template>
+
+          <!-- 当没有文章时显示暂无数据提示 -->
+          <div v-else class="empty-state">
+            <div class="empty-icon">📝</div>
+            <div class="empty-text">暂无文章数据</div>
+            <div class="empty-subtext">敬请期待更多精彩内容</div>
           </div>
         </div>
 
@@ -323,7 +327,6 @@ const initPageAnimations = () => {
           </div>
         </div>
 
-        <!-- 优化后的个人信息区域 -->
         <div class="profile-info">
           <h3 class="profile-title">全栈工程师</h3>
           <!-- 简短介绍 -->
@@ -374,7 +377,7 @@ const initPageAnimations = () => {
           <h4 class="update-title">最近更新</h4>
         </div>
         <div class="update-list">
-          <a v-for="item in update" :key="item.id" href="#" class="update-item">
+          <a v-for="item in update" :key="item.id" class="update-item">
             <div class="update-content" @click="queryid(item.id)">
               <div class="update-title-text">{{ item.title }}</div>
               <div class="update-time">{{ formatDate(item.createTime) }}</div>
@@ -385,6 +388,7 @@ const initPageAnimations = () => {
     </div>
   </div>
 </template>
+
 <style scoped>
 /* 全局样式重置与基础设置 */
 * {
@@ -461,7 +465,6 @@ body {
   background-color: #2d3748;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
-
 /* 左侧区域装饰效果 */
 .left::after {
   content: '';
@@ -1259,6 +1262,7 @@ body {
 .update-content {
   flex: 1;
   min-width: 0;
+  cursor: pointer; /* 添加这一行，使鼠标悬停时显示小手图标 */
 }
 
 .update-title-text {
@@ -1346,42 +1350,51 @@ body {
   }
 }
 
-/* 响应式适配 */
-@media (max-width: 1700px) {
-  .box {
-    width: 95%;
-  }
+/* 暂无数据状态样式 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 15px;
+  text-align: center;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px dashed #e8e8e8;
 }
 
-@media (max-width: 1200px) {
-  .box {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .right {
-    margin-left: 0;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .right-top,
-  .right-z-top,
-  .right-bottom {
-    flex: 1;
-    min-width: 300px;
-  }
+.dark .empty-state {
+  background-color: #2d3748;
+  border-color: #4a5568;
 }
 
+.empty-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.dark .empty-text {
+  color: #a0aec0;
+}
+
+.empty-subtext {
+  font-size: 12px;
+  color: #999;
+}
+
+.dark .empty-subtext {
+  color: #718096;
+}
+
+/* 响应式适配增强 */
 @media (max-width: 768px) {
   .box {
     padding: 10px;
   }
 
-  .left,
-  .right-top,
-  .right-z-top,
-  .right-bottom {
+  .left, .right-top, .right-z-top, .right-bottom {
     padding: 16px;
   }
 
@@ -1404,6 +1417,12 @@ body {
     width: 40px;
     height: 40px;
     font-size: 16px;
+  }
+
+  /* 移动端优化空状态样式 */
+  .empty-state {
+    padding: 40px 15px;
+    margin-top: 20px;
   }
 }
 
