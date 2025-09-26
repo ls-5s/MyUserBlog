@@ -37,7 +37,10 @@
       <el-main>
         <router-view></router-view>
       </el-main>
-      <!-- <el-footer>Footer</el-footer> -->
+      <!-- <el-footer>
+        <div class="text-red-500">2024 全栈开发者</div>
+      </el-footer> -->
+
     </el-container>
   </div>
 </template>
@@ -142,6 +145,7 @@ const calculateDarkModeColor = (color) => {
 
 .el-header {
   position: fixed;
+  z-index: 999;
   /* 固定定位，脱离文档流 */
   top: 0;
   /* 距离窗口顶部 0px */
@@ -159,7 +163,7 @@ const calculateDarkModeColor = (color) => {
   align-items: center;
   /* border-bottom: 1px solid #e4e7ed; */
   /* 新增阴影：水平偏移0、垂直偏移2px、模糊10px、透明度20%的黑色阴影 */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); */
 }
 
 /* 暗黑模式下的边框颜色 */
