@@ -2,10 +2,7 @@
 
 </script>
 <template>
-  <div>分类</div>
+  <h1 className="text-3xl font-bold underline">
+    Hello world!
+  </h1>
 </template>
-<style scoped>
-  .classPage {
-    padding: 20px;
-  }
-</style>

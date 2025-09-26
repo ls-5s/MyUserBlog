@@ -76,6 +76,7 @@ const options = [
   { value: '开发工具', label: '开发工具' },
   { value: '代码人生', label: '代码人生' },
   { value: '阅读', label: '阅读' },
+  { value: '面试', label: '面试' },
 ];
 
 // 创建引用以访问DOM元素
