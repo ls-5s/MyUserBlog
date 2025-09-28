@@ -1,5 +1,5 @@
 <script setup>
-import { postlearn } from '@/api/learn'
+import { postlearn, postlearnstack } from '@/api/learn'
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 const formData = ref({
@@ -9,6 +9,12 @@ const formData = ref({
   resources: '',
   introduction: '',
   content: ''
+})
+const stackFormData = ref({
+  category: '',
+  stack: '',
+  time: '',
+  introduction: ''
 })
 
 // 提交表单
@@ -45,6 +51,38 @@ const resetForm = () => {
     resources: '',
     introduction: '',
     content: ''
+  }
+  ElMessage.success('重置成功')
+}
+// 提交技术栈
+const handleStackSubmit = async () => {
+  try {
+    if (!stackFormData.value.category || !stackFormData.value.stack || !stackFormData.value.time || !stackFormData.value.introduction) {
+      ElMessage.error('请填写完整信息')
+      return
+    }
+    await postlearnstack(stackFormData.value)
+    // 发布成功后，重置表单数据
+    stackFormData.value = {
+      category: '',
+      stack: '',
+      time: '',
+      introduction: ''
+    }
+    // 提示用户发布成功
+    ElMessage.success('发布成功')
+  } catch (error) {
+    // 发布失败，提示用户
+    ElMessage.error('发布失败，请检查输入信息', error.message)
+  }
+}
+// 重置技术栈表单
+const resetStackForm = () => {
+  stackFormData.value = {
+    category: '',
+    stack: '',
+    time: '',
+    introduction: ''
   }
   ElMessage.success('重置成功')
 }
@@ -102,7 +140,7 @@ const resetForm = () => {
 
           <!-- 提交按钮区域 -->
           <div class="form-actions">
-            <button class="submit-btn" @click="handleSubmit">发布内容</button>
+            <button class="submit-btn" @click="handleSubmit" @keyup.enter="handleSubmit" tabindex="0">发布内容</button>
             <button class="cancel-btn" @click="resetForm">取消</button>
           </div>
         </div>
@@ -117,24 +155,26 @@ const resetForm = () => {
           <div class="form-grid">
             <div class="form-group">
               <label class="form-label">分类</label>
-              <input type="text" class="form-input" placeholder="请输入分类">
+              <input v-model="stackFormData.category" type="text" class="form-input" placeholder="请输入分类">
             </div>
             <div class="form-group">
               <label class="form-label">技术栈</label>
-              <input type="text" class="form-input" placeholder="请输入技术栈">
+              <input v-model="stackFormData.stack" type="text" class="form-input" placeholder="请输入技术栈">
             </div>
             <div class="form-group">
               <label class="form-label">时间</label>
-              <input type="text" class="form-input" placeholder="请输入时间">
+              <input v-model="stackFormData.time" type="text" class="form-input" placeholder="请输入时间">
             </div>
           </div>
           <div class="form-group">
             <label class="form-label">技术栈介绍</label>
-            <textarea v-model="formData.introduction" class="form-textarea" placeholder="请输入技术栈介绍" rows="4"></textarea>
+            <textarea v-model="stackFormData.introduction" class="form-textarea" placeholder="请输入技术栈介绍"
+              rows="4"></textarea>
           </div>
           <div class="form-actions">
-            <button class="submit-btn" @click="handleTechStackSubmit">发布</button>
-            <button class="cancel-btn" @click="handleTechStackCancel">取消</button>
+            <button class="submit-btn" @click="handleStackSubmit" @keyup.enter="handleStackSubmit"
+              tabindex="0">发布</button>
+            <button class="cancel-btn" @click="resetStackForm">取消</button>
           </div>
         </div>
       </div>
@@ -179,7 +219,8 @@ const resetForm = () => {
   border-radius: 12px;
   padding: 30px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  min-height: 600px; /* 确保两栏高度一致 */
+  min-height: 600px;
+  /* 确保两栏高度一致 */
 }
 
 /* 表单头部样式 */

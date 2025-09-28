@@ -1,0 +1,20 @@
+[
+  {
+    "category": "前端基础技术",
+    "stack": "HTML",
+    "time": "2-3周",
+    "introduction": "掌握网页结构的基础标记语言，学习语义化标签和表单元素"
+  },
+  {
+    "category": "前端基础技术",
+    "stack": "CSS",
+    "time": "3-4周",
+    "introduction": "学习样式设计，包括选择器、盒模型、Flexbox、Grid布局和响应式设计"
+  },
+  {
+    "category": "前端基础技术",
+    "stack": "JavaScript",
+    "time": "1-2个月",
+    "introduction": "学习JavaScript编程语言基础、DOM操作、异步编程和ES6+特性"
+  }
+]
