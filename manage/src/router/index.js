@@ -28,7 +28,12 @@ const router = createRouter({
           path: '/article/manage',
           name: 'ArticleManage',
           component: () => import('@/view/article/ManageArticle.vue')
-        }
+        },
+        {
+          path: '/learning/path',
+          name: 'LearningPath',
+          component: () => import('@/view/article/LearningPath.vue')
+        },
       ]
 
 
@@ -42,7 +47,8 @@ const router = createRouter({
       path: '/article/update',
       name: 'ArticleUpdate',
       component: () => import('@/view/article/UpdataArticle.vue')
-    }
+    },
+
 
   ]
 })

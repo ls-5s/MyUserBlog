@@ -33,6 +33,12 @@ import { Management, User } from '@element-plus/icons-vue'
               </el-icon>
               <span>个人中心</span>
             </el-menu-item>
+            <el-menu-item index="/learning/path">
+              <el-icon>
+                <Management />
+              </el-icon>
+              <span>学习路径</span>
+            </el-menu-item>
             <!-- <el-sub-menu index="/user">
               <template #title>
                 <el-icon>

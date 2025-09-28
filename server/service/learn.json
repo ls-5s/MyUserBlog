@@ -1,0 +1,66 @@
+[
+  {
+    "stack": "JavaScript, Node.js",
+    "prerequisites": "Basic programming knowledge",
+    "time": "10 weeks",
+    "resources": "Video tutorials, E-books",
+    "introduction": "Learn backend development",
+    "content": "Week 1: Fundamentals..."
+  },
+  {
+    "stack": "JavaScript  111111",
+    "prerequisites": "Basic programming knowledge",
+    "time": "10 weeks",
+    "resources": "Video tutorials, E-books",
+    "introduction": "Learn backend development",
+    "content": "Week 1: Fundamentals..."
+  },
+  {
+    "stack": "JavaScript",
+    "prerequisites": "Basic programming knowledge",
+    "time": "10 weeks",
+    "resources": "Video tutorials, E-books",
+    "introduction": "Learn backend development",
+    "content": "Week 1: Fundamentals..."
+  },
+  {
+    "stack": "1111111111",
+    "prerequisites": "111111111111111",
+    "time": "1111111",
+    "resources": "111111111",
+    "introduction": "1111111111",
+    "content": "111111111111"
+  },
+  {
+    "stack": "",
+    "prerequisites": "",
+    "time": "",
+    "resources": "",
+    "introduction": "11111111111",
+    "content": ""
+  },
+  {
+    "stack": "1111111",
+    "prerequisites": "11111111",
+    "time": "11111111",
+    "resources": "111111111",
+    "introduction": "1111111111111",
+    "content": "111111111111"
+  },
+  {
+    "stack": "HTML",
+    "prerequisites": "无",
+    "time": "2 - 3 周",
+    "resources": "黑马程序员html,bilibili.com/video/BV1MvaVzUEuz/?spm_id_from=333.337.search-card.all.click",
+    "introduction": "掌握网页结构的基础标记语言，学习语义化标签和表单元素。",
+    "content": "HTML 基本标签和文档结构,\n语义化 HTML5 标签,\n表单元素与验证,\n多媒体元素（图片、音频、视频）,\nHTML 与 CSS 的结合,\n响应式 HTML 设计原则"
+  },
+  {
+    "stack": "CSS",
+    "prerequisites": "基础 HTML 知识",
+    "time": "3 - 4 周",
+    "resources": "黑马程序员css,https://www.bilibili.com/video/BV1MvaVzUEuz?spm_id_from=333.788.videopod.sections&vd_source=f32bb7c44a88910892ec0ef08c814d42&p=41",
+    "introduction": "学习样式设计，包括选择器、盒模型、Flexbox、Grid 布局和响应式设计。",
+    "content": "CSS 选择器与优先级,\n盒模型与布局基础,\nFlexbox 弹性布局,\nGrid 网格布局,\nCSS 变量与自定义属性,\n响应式设计与媒体查询,\n动画与过渡效果,"
+  }
+]
