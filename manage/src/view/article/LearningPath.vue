@@ -56,52 +56,86 @@ const resetForm = () => {
       <h1 class="page-title">学习路径管理</h1>
     </div>
 
-    <!-- 表单容器 -->
-    <div class="form-container">
-      <div class="form-header">
-        <h2 class="section-title">内容详情</h2>
+    <!-- 左右两栏容器 -->
+    <div class="two-column-container">
+      <!-- 表单容器 - 左侧 -->
+      <div class="form-container">
+        <div class="form-header">
+          <h2 class="section-title">内容详情</h2>
+        </div>
+
+        <!-- 表单内容区域 -->
+        <div class="form-content">
+          <!-- 基本信息部分 - 网格布局 -->
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">技术栈</label>
+              <input v-model="formData.stack" type="text" class="form-input" placeholder="请输入技术栈">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">前置要求</label>
+              <input v-model="formData.prerequisites" type="text" class="form-input" placeholder="请输入前置要求">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">课程时长</label>
+              <input v-model="formData.time" type="text" class="form-input" placeholder="请输入课程时长">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">课程资源</label>
+              <textarea v-model="formData.resources" type="text" class="form-textarea" placeholder="请输入课程资源"></textarea>
+            </div>
+          </div>
+
+          <!-- 文本区域部分 -->
+          <div class="form-group">
+            <label class="form-label">课程简介</label>
+            <textarea v-model="formData.introduction" class="form-textarea" placeholder="请输入课程简介" rows="4"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">课程内容</label>
+            <textarea v-model="formData.content" class="form-textarea" placeholder="请输入课程内容" rows="6"></textarea>
+          </div>
+
+          <!-- 提交按钮区域 -->
+          <div class="form-actions">
+            <button class="submit-btn" @click="handleSubmit">发布内容</button>
+            <button class="cancel-btn" @click="resetForm">取消</button>
+          </div>
+        </div>
       </div>
 
-      <!-- 表单内容区域 -->
-      <div class="form-content">
-        <!-- 基本信息部分 - 网格布局 -->
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">技术栈</label>
-            <input v-model="formData.stack" type="text" class="form-input" placeholder="请输入技术栈">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">前置要求</label>
-            <input v-model="formData.prerequisites" type="text" class="form-input" placeholder="请输入前置要求">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">课程时长</label>
-            <input v-model="formData.time" type="text" class="form-input" placeholder="请输入课程时长">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">课程资源</label>
-            <textarea v-model="formData.resources" type="text" class="form-textarea" placeholder="请输入课程资源"></textarea>
-          </div>
+      <!-- 技术栈介绍部分 - 右侧 -->
+      <div class="tech-stack-section">
+        <div class="form-header">
+          <h2 class="section-title">技术栈介绍</h2>
         </div>
-
-        <!-- 文本区域部分 -->
-        <div class="form-group">
-          <label class="form-label">课程简介</label>
-          <textarea v-model="formData.introduction" class="form-textarea" placeholder="请输入课程简介" rows="4"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">课程内容</label>
-          <textarea v-model="formData.content" class="form-textarea" placeholder="请输入课程内容" rows="6"></textarea>
-        </div>
-
-        <!-- 提交按钮区域 -->
-        <div class="form-actions">
-          <button class="submit-btn" @click="handleSubmit">发布内容</button>
-          <button class="cancel-btn" @click="resetForm">取消</button>
+        <div class="form-content">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">分类</label>
+              <input type="text" class="form-input" placeholder="请输入分类">
+            </div>
+            <div class="form-group">
+              <label class="form-label">技术栈</label>
+              <input type="text" class="form-input" placeholder="请输入技术栈">
+            </div>
+            <div class="form-group">
+              <label class="form-label">时间</label>
+              <input type="text" class="form-input" placeholder="请输入时间">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">技术栈介绍</label>
+            <textarea v-model="formData.introduction" class="form-textarea" placeholder="请输入技术栈介绍" rows="4"></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="submit-btn" @click="handleTechStackSubmit">发布</button>
+            <button class="cancel-btn" @click="handleTechStackCancel">取消</button>
+          </div>
         </div>
       </div>
     </div>
@@ -129,14 +163,23 @@ const resetForm = () => {
   margin: 0;
 }
 
-/* 表单容器样式 */
-.form-container {
+/* 左右两栏布局容器 */
+.two-column-container {
+  display: flex;
+  gap: 20px;
+  max-width: 1840px;
+  margin: 0 auto;
+}
+
+/* 表单容器样式 - 左右两栏共享 */
+.form-container,
+.tech-stack-section {
+  flex: 1;
   background: white;
   border-radius: 12px;
   padding: 30px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  max-width: 900px;
-  margin: 0 auto;
+  min-height: 600px; /* 确保两栏高度一致 */
 }
 
 /* 表单头部样式 */
@@ -256,5 +299,15 @@ const resetForm = () => {
   background-color: #ecf5ff;
 }
 
+/* 响应式布局 */
+@media (max-width: 1024px) {
+  .two-column-container {
+    flex-direction: column;
+  }
 
+  .form-container,
+  .tech-stack-section {
+    min-height: auto;
+  }
+}
 </style>
