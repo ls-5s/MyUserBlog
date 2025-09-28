@@ -16,5 +16,66 @@
     "stack": "JavaScript",
     "time": "1-2个月",
     "introduction": "学习JavaScript编程语言基础、DOM操作、异步编程和ES6+特性"
+  },
+  {
+    "category": "前端框架",
+    "stack": "Vue 2",
+    "time": "1 个月",
+    "introduction": "学习 Vue.js 2 框架的核心概念、组件系统、指令和生命周期钩子"
+  },
+  {
+    "category": "前端框架",
+    "stack": "Vue 3",
+    "time": "1 个月",
+    "introduction": "掌握 Vue.js 3 的新特性，包括 Composition API、Teleport 和 Suspense"
+  },
+  {
+    "category": "前端框架",
+    "stack": "UniApp",
+    "time": "1-2 个月",
+    "introduction": "学习使用 UniApp 开发跨平台应用，一次编写多端运行（iOS、Android、Web）"
+  },
+  {
+    "category": "前端框架",
+    "stack": "Axios",
+    "time": "2 周",
+    "introduction": "掌握 HTTP 请求库 Axios 的使用，处理 API 调用、请求拦截和响应处理"
+  },
+  {
+    "category": "前端框架",
+    "stack": "Tailwind CSS",
+    "time": "2-3 周",
+    "introduction": "学习实用优先的 CSS 框架，掌握原子类设计、响应式工具和自定义配置"
+  },
+  {
+    "category": "后端开发",
+    "stack": "Node.js",
+    "time": "1-2 个月",
+    "introduction": "学习使用 JavaScript 构建后端应用程序，了解事件循环和非阻塞 I/O"
+  },
+  {
+    "category": "后端开发",
+    "stack": "Express",
+    "time": "3-4 周",
+    "introduction": "学习使用 Express 框架快速构建 Web 应用和 API，掌握中间件和路由"
+  },
+  {
+    "category": "后端开发",
+    "stack": "TypeORM",
+    "time": "2-3 周",
+    "introduction": "学习使用 TypeORM 进行数据库操作，实现对象关系映射和数据模型管理"
+  },
+  {
+    "category": "技能提升",
+    "stack": "Git",
+    "time": "2-3 周",
+    "introduction": "掌握版本控制系统 Git，学习分支管理、合并、提交和远程仓库操作"
+  },
+  {
+    "category": "技能提升",
+    "stack": "TypeScript",
+    "time": "3-4 周",
+    "introduction": "学习 TypeScript 的类型系统、接口、泛型和高级特性，提升代码质量"
   }
+
 ]

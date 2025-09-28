@@ -23,7 +23,7 @@
           <el-icon class="mr-2">
             <Filter /><!-- Element UI 内置的班级填充图标 -->
           </el-icon>
-          分类
+          学习路径
         </el-link>
         <el-link type="primary" href="/layout/home" class="nav-link" :underline="false">
           <!-- Home 图标 + 文字 -->

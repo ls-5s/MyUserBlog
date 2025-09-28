@@ -10,17 +10,17 @@ const postlearn = async (req, res) => {
         const { stack, prerequisites, time, resources, introduction, content } = req.body;
         const learnData = await readFileData(dataSource);
         // 使用与JSON文件中相同的小写字段名
-        const index = learnData.findIndex(item => item.stack === stack);
+        const index = learnData[stack]
         console.log(index); // 现在应该能正确打印索引值了
         if (index === -1) {
-            learnData.push({
+            learnData.stack = {
                 stack: stack,
                 prerequisites: prerequisites,
                 time: time,
                 resources: resources,
                 introduction: introduction,
                 content: content
-            })
+            }
             await writeFileData(dataSource, learnData);
             return res.status(201).json({
                 code: 201,
@@ -28,14 +28,14 @@ const postlearn = async (req, res) => {
                 data: null
             })
         }
-        // 更新时也使用小写字段名
-        learnData[index].stack = stack
-        learnData[index].prerequisites = prerequisites;
-        learnData[index].time = time;
-        learnData[index].resources = resources;
-        learnData[index].introduction = introduction;
-        learnData[index].content = content;
-
+        learnData[stack] = {
+                stack: stack,
+                prerequisites: prerequisites,
+                time: time,
+                resources: resources,
+                introduction: introduction,
+                content: content
+            }
         await writeFileData(dataSource, learnData);
         res.status(201).json({
             code: 201,
@@ -53,20 +53,11 @@ const postlearn = async (req, res) => {
 // 获取学习路径
 const getlearn = async (req, res) => {
     try {
-        const { stack } = req.query;
         const learnData = await readFileData(dataSource);
-        const learnPath = learnData.find(item => item.stack === stack);
-        if (!learnPath) {
-            return res.status(404).json({
-                code: 404,
-                message: '学习路径不存在',
-                data: null
-            })
-        }
         res.status(201).json({
             code: 201,
             message: '获取学习路径成功',
-            data: learnPath
+            data: learnData
         })
     } catch (error) {
         console.error('获取学习路径失败:', error)

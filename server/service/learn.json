@@ -1,20 +1,114 @@
-[
-  
-  {
+{
+  "1111": {
+    "stack": "1111",
+    "prerequisites": "1111",
+    "time": "1111",
+    "resources": "1111",
+    "introduction": "1111",
+    "content": "11117777777"
+  },
+  "HTML": {
     "stack": "HTML",
     "prerequisites": "无",
-    "time": "2 - 3 周",
-    "resources": "黑马程序员html,bilibili.com/video/BV1MvaVzUEuz/?spm_id_from=333.337.search-card.all.click",
+    "time": "2-3周",
+    "resources": "示例HTML资源,https://example.com/html-course",
     "introduction": "掌握网页结构的基础标记语言，学习语义化标签和表单元素。",
-    "content": "HTML 基本标签和文档结构,\n语义化 HTML5 标签,\n表单元素与验证,\n多媒体元素（图片、音频、视频）,\nHTML 与 CSS 的结合,\n响应式 HTML 设计原则"
+    "content": "HTML基本标签和文档结构,\n语义化HTML5标签,\n表单元素与验证,\n多媒体元素（图片、音频、视频）,\nHTML与CSS的结合,\n响应式HTML设计原则"
   },
-  {
+  "CSS": {
     "stack": "CSS",
-    "prerequisites": "基础 HTML 知识",
-    "time": "3 - 4 周",
+    "prerequisites": "基础HTML知识",
+    "time": "3-4周",
     "resources": "黑马程序员css,https://www.bilibili.com/video/BV1MvaVzUEuz?spm_id_from=333.788.videopod.sections&vd_source=f32bb7c44a88910892ec0ef08c814d42&p=41",
-    "introduction": "学习样式设计，包括选择器、盒模型、Flexbox、Grid 布局和响应式设计。",
-    "content": "CSS 选择器与优先级,\n盒模型与布局基础,\nFlexbox 弹性布局,\nGrid 网格布局,\nCSS 变量与自定义属性,\n响应式设计与媒体查询,\n动画与过渡效果,"
+    "introduction": "学习样式设计，包括选择器、盒模型、Flexbox、Grid布局和响应式设计。",
+    "content": "CSS选择器与优先级,\n盒模型与布局基础,\nFlexbox弹性布局,\nGrid网格布局,\nCSS变量与自定义属性,\n响应式设计与媒体查询,\n动画与过渡效果"
+  },
+  "JavaScript": {
+    "stack": "JavaScript",
+    "prerequisites": "基础HTML和CSS知识",
+    "time": "1-2个月",
+    "resources": "示例JavaScript资源,https://example.com/js-course",
+    "introduction": "学习JavaScript编程语言基础、DOM操作、异步编程和ES6+特性。",
+    "content": "JavaScript基础语法,\n数据类型与运算符,\n函数、对象与数组,\nDOM操作与事件处理,\n异步编程（回调、Promise、async/await）,\nES6+新特性,\n错误处理与调试技巧"
+  },
+  "Vue 2": {
+    "stack": "Vue 2",
+    "prerequisites": "JavaScript基础",
+    "time": "1个月",
+    "resources": "示例Vue 2资源,https://example.com/vue2-course",
+    "introduction": "学习Vue.js 2框架的核心概念、组件系统、指令和生命周期钩子。",
+    "content": "Vue.js基本概念与安装,\n模板语法与数据绑定,\n组件系统与通信,\n指令系统,\n生命周期钩子,\nVue Router路由管理,\nVuex状态管理"
+  },
+  "Vue 3": {
+    "stack": "Vue 3",
+    "prerequisites": "Vue 2基础或其他框架经验",
+    "time": "1个月",
+    "resources": "示例Vue 3资源,https://example.com/vue3-course",
+    "introduction": "掌握Vue.js 3的新特性，包括Composition API、Teleport和Suspense。",
+    "content": "Vue 3新特性概述,\nComposition API深入理解,\nTeleport组件,\nSuspense异步组件,\nVue 3性能优化,\nTypeScript与Vue 3结合,\nVue 3生态系统"
+  },
+  "UniApp": {
+    "stack": "UniApp",
+    "prerequisites": "Vue.js基础",
+    "time": "1-2个月",
+    "resources": "示例UniApp资源,https://example.com/uniapp-course",
+    "introduction": "学习使用UniApp开发跨平台应用，一次编写多端运行（iOS、Android、Web）。",
+    "content": "UniApp框架介绍与环境搭建,\n页面路由与组件,\n数据请求与状态管理,\n原生API调用,\n条件编译与平台差异处理,\n应用发布与优化,\n实战项目开发"
+  },
+  "Axios": {
+    "stack": "Axios",
+    "prerequisites": "JavaScript基础",
+    "time": "2周",
+    "resources": "示例Axios资源,https://example.com/axios-course",
+    "introduction": "掌握HTTP请求库Axios的使用，处理API调用、请求拦截和响应处理。",
+    "content": "Axios基础用法,\n请求配置与参数处理,\n响应数据处理,\n拦截器的使用,\n错误处理策略,\n取消请求,\nAxios在实际项目中的最佳实践"
+  },
+  "Tailwind CSS": {
+    "stack": "Tailwind CSS",
+    "prerequisites": "基础CSS知识",
+    "time": "2-3周",
+    "resources": "示例Tailwind CSS资源,https://example.com/tailwind-course",
+    "introduction": "学习实用优先的CSS框架，掌握原子类设计、响应式工具和自定义配置。",
+    "content": "Tailwind CSS介绍与安装,\n原子类设计理念,\n响应式工具类,\n自定义配置,\n组件提取,\n深色模式支持,\n性能优化"
+  },
+  "Node.js": {
+    "stack": "Node.js",
+    "prerequisites": "JavaScript基础",
+    "time": "1-2个月",
+    "resources": "示例Node.js资源,https://example.com/nodejs-course",
+    "introduction": "学习使用JavaScript构建后端应用程序，了解事件循环和非阻塞I/O。",
+    "content": "Node.js架构与原理,\n模块系统（CommonJS、ES模块）,\n文件系统操作,\n网络编程基础,\n异步编程模型,\nNPM包管理,\nExpress框架入门"
+  },
+  "Express": {
+    "stack": "Express",
+    "prerequisites": "Node.js基础",
+    "time": "3-4周",
+    "resources": "示例Express资源,https://example.com/express-course",
+    "introduction": "学习使用Express框架快速构建Web应用和API，掌握中间件和路由。",
+    "content": "Express框架介绍与安装,\n路由系统,\n中间件机制,\n请求与响应处理,\n模板引擎,\n数据库集成,\n认证与授权"
+  },
+  "TypeORM": {
+    "stack": "TypeORM",
+    "prerequisites": "TypeScript和数据库基础",
+    "time": "2-3周",
+    "resources": "示例TypeORM资源,https://example.com/typeorm-course",
+    "introduction": "学习使用TypeORM进行数据库操作，实现对象关系映射和数据模型管理。",
+    "content": "TypeORM介绍与安装,\n实体定义与关系映射,\n仓库模式,\n查询构建器,\n迁移与种子,\n事务处理,\n性能优化技巧"
+  },
+  "Git": {
+    "stack": "Git",
+    "prerequisites": "无",
+    "time": "2-3周",
+    "resources": "示例Git资源,https://example.com/git-course",
+    "introduction": "掌握版本控制系统Git，学习分支管理、合并、提交和远程仓库操作。",
+    "content": "Git基础与安装配置,\n工作区、暂存区与版本库,\n提交历史查看与版本回退,\n分支创建、切换与合并,\n远程仓库操作与协作,\n冲突解决策略,\nGitFlow工作流实践"
+  },
+  "TypeScript": {
+    "stack": "TypeScript",
+    "prerequisites": "JavaScript基础",
+    "time": "3-4周",
+    "resources": "示例TypeScript资源,https://example.com/typescript-course",
+    "introduction": "学习TypeScript的类型系统、接口、泛型和高级特性，提升代码质量。",
+    "content": "TypeScript配置与编译,\n基本类型与类型推断,\n接口与类型别名,\n类与继承,\n泛型与约束,\n高级类型(交叉类型、联合类型等),\n模块系统与命名空间,\n与JavaScript项目集成"
   }
-
-]
+}

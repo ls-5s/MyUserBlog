@@ -1,221 +1,53 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { getLearnStack, getLearnPath } from '@/api/learn'
+// 前端基础技术
+const learnStack = ref([])
+// 前端框架
+const learnvue = ref([])
+const learnPath = ref()
+const learnnode = ref([])
+const learnSkill = ref([])
+// 返回顶部相关
+const showBackToTop = ref(false);
 
+// 获取学习路径
+const getPath = async () => {
+  const res = await getLearnPath()
+  learnPath.value = res.data.data
+  console.log(learnPath.value)
+}
+// 获取前端基础技术栈
+const getStack = async (category) => {
+  const res = await getLearnStack(category)
+  learnStack.value = res.data.data
+  // console.log(learnStack.value)
+}
+// 获取前端框架栈
+const getVueStack = async (category) => {
+  const res = await getLearnStack(category)
+  learnvue.value = res.data.data
+  // console.log(learnvue.value)
+}
+// 获取Node.js栈
+const getNodeStack = async (category) => {
+  const res = await getLearnStack(category)
+  learnnode.value = res.data.data
+  // console.log(learnnode.value)
+}
+// 获取技能提升栈
+const getSkillStack = async (category) => {
+  const res = await getLearnStack(category)
+  learnSkill.value = res.data.data
+  // console.log(learnSkill.value)
+}
 // 弹窗状态管理
 const showModal = ref(false);
 const currentCourse = ref(null);
 
-// 课程详细信息数据
-const coursesData = {
-  'HTML': {
-    title: 'HTML 基础与进阶',
-    description: '掌握网页结构的基础标记语言，学习语义化标签和表单元素',
-    duration: '2-3周',
-    level: '初级',
-    content: [
-      'HTML基本标签和文档结构',
-      '语义化HTML5标签',
-      '表单元素与验证',
-      '多媒体元素（图片、音频、视频）',
-      'HTML与CSS的结合',
-      '响应式HTML设计原则'
-    ],
-    prerequisites: '无',
-    certificate: true
-  },
-  'CSS': {
-    title: 'CSS 样式设计精通',
-    description: '学习样式设计，包括选择器、盒模型、Flexbox、Grid布局和响应式设计',
-    duration: '3-4周',
-    level: '初级到中级',
-    content: [
-      'CSS选择器与优先级',
-      '盒模型与布局基础',
-      'Flexbox弹性布局',
-      'Grid网格布局',
-      'CSS变量与自定义属性',
-      '响应式设计与媒体查询',
-      '动画与过渡效果'
-    ],
-    prerequisites: '基础HTML知识',
-    certificate: true
-  },
-  'JavaScript': {
-    title: 'JavaScript 编程基础与高级特性',
-    description: '学习JavaScript编程语言基础、DOM操作、异步编程和ES6+特性',
-    duration: '1-2个月',
-    level: '初级到中级',
-    content: [
-      'JavaScript基础语法',
-      '数据类型与运算符',
-      '函数、对象与数组',
-      'DOM操作与事件处理',
-      '异步编程（回调、Promise、async/await）',
-      'ES6+新特性',
-      '错误处理与调试技巧'
-    ],
-    prerequisites: '基础HTML和CSS知识',
-    certificate: true
-  },
-  'Vue 2': {
-    title: 'Vue.js 2 框架开发实战',
-    description: '学习Vue.js 2框架的核心概念、组件系统、指令和生命周期钩子',
-    duration: '1个月',
-    level: '中级',
-    content: [
-      'Vue.js基本概念与安装',
-      '模板语法与数据绑定',
-      '组件系统与通信',
-      '指令系统',
-      '生命周期钩子',
-      'Vue Router路由管理',
-      'Vuex状态管理'
-    ],
-    prerequisites: 'JavaScript基础',
-    certificate: true
-  },
-  'Vue 3': {
-    title: 'Vue.js 3 新特性与实战',
-    description: '掌握Vue.js 3的新特性，包括Composition API、Teleport和Suspense',
-    duration: '1个月',
-    level: '中级到高级',
-    content: [
-      'Vue 3新特性概述',
-      'Composition API深入理解',
-      'Teleport组件',
-      'Suspense异步组件',
-      'Vue 3性能优化',
-      'TypeScript与Vue 3结合',
-      'Vue 3生态系统'
-    ],
-    prerequisites: 'Vue 2基础或其他框架经验',
-    certificate: true
-  },
-  'UniApp': {
-    title: 'UniApp 跨平台应用开发',
-    description: '学习使用UniApp开发跨平台应用，一次编写多端运行（iOS、Android、Web）',
-    duration: '1-2个月',
-    level: '中级',
-    content: [
-      'UniApp框架介绍与环境搭建',
-      '页面路由与组件',
-      '数据请求与状态管理',
-      '原生API调用',
-      '条件编译与平台差异处理',
-      '应用发布与优化',
-      '实战项目开发'
-    ],
-    prerequisites: 'Vue.js基础',
-    certificate: true
-  },
-  'Axios': {
-    title: 'Axios 网络请求实战',
-    description: '掌握HTTP请求库Axios的使用，处理API调用、请求拦截和响应处理',
-    duration: '2周',
-    level: '初级到中级',
-    content: [
-      'Axios基础用法',
-      '请求配置与参数处理',
-      '响应数据处理',
-      '拦截器的使用',
-      '错误处理策略',
-      '取消请求',
-      'Axios在实际项目中的最佳实践'
-    ],
-    prerequisites: 'JavaScript基础',
-    certificate: false
-  },
-  'Tailwind CSS': {
-    title: 'Tailwind CSS 实用样式框架',
-    description: '学习实用优先的CSS框架，掌握原子类设计、响应式工具和自定义配置',
-    duration: '2-3周',
-    level: '初级到中级',
-    content: [
-      'Tailwind CSS介绍与安装',
-      '原子类设计理念',
-      '响应式工具类',
-      '自定义配置',
-      '组件提取',
-      '深色模式支持',
-      '性能优化'
-    ],
-    prerequisites: '基础CSS知识',
-    certificate: false
-  },
-  'Node.js': {
-    title: 'Node.js 后端开发基础',
-    description: '学习使用JavaScript构建后端应用程序，了解事件循环和非阻塞I/O',
-    duration: '1-2个月',
-    level: '中级',
-    content: [
-      'Node.js架构与原理',
-      '模块系统（CommonJS、ES模块）',
-      '文件系统操作',
-      '网络编程基础',
-      '异步编程模型',
-      'NPM包管理',
-      'Express框架入门'
-    ],
-    prerequisites: 'JavaScript基础',
-    certificate: true
-  },
-  'Express': {
-    title: 'Express.js Web应用开发',
-    description: '学习使用Express框架快速构建Web应用和API，掌握中间件和路由',
-    duration: '3-4周',
-    level: '中级',
-    content: [
-      'Express框架介绍与安装',
-      '路由系统',
-      '中间件机制',
-      '请求与响应处理',
-      '模板引擎',
-      '数据库集成',
-      '认证与授权'
-    ],
-    prerequisites: 'Node.js基础',
-    certificate: true
-  },
-  'TypeORM': {
-    title: 'TypeORM 数据库映射框架',
-    description: '学习使用TypeORM进行数据库操作，实现对象关系映射和数据模型管理',
-    duration: '2-3周',
-    level: '中级',
-    content: [
-      'TypeORM介绍与安装',
-      '实体定义与关系映射',
-      '仓库模式',
-      '查询构建器',
-      '迁移与种子',
-      '事务处理',
-      '性能优化技巧'
-    ],
-    prerequisites: 'TypeScript和数据库基础',
-    certificate: false
-  },
-  'Git': {
-    title: 'Git 版本控制精通',
-    description: '掌握版本控制系统Git，学习分支管理、合并、提交和远程仓库操作',
-    duration: '2-3周',
-    level: '初级到中级',
-    content: [],
-    prerequisites: '无',
-    certificate: false
-  },
-  'TypeScript': {
-    title: 'TypeScript 类型系统与高级特性',
-    description: '学习TypeScript的类型系统、接口、泛型和高级特性，提升代码质量',
-    duration: '3-4周',
-    level: '中级到高级',
-    content: [],
-    prerequisites: 'JavaScript基础',
-    certificate: false
-  }
-};
-
 // 打开弹窗函数
 function openModal(courseName) {
-  currentCourse.value = coursesData[courseName];
+  currentCourse.value = learnPath.value[courseName];
   showModal.value = true;
 }
 
@@ -224,6 +56,33 @@ function closeModal() {
   showModal.value = false;
   currentCourse.value = null;
 }
+
+// 返回顶部函数
+function backToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}
+
+// 监听滚动事件
+const handleScroll = () => {
+  showBackToTop.value = window.scrollY > 300;
+};
+
+onMounted(() => {
+  getStack('前端基础技术')
+  getVueStack('前端框架')
+  getNodeStack('后端开发')
+  getSkillStack('技能提升')
+  getPath()
+  // 添加滚动监听
+  window.addEventListener('scroll', handleScroll);
+  // 组件卸载时移除监听
+  return () => {
+    window.removeEventListener('scroll', handleScroll);
+  };
+})
 </script>
 
 <template>
@@ -254,48 +113,17 @@ function closeModal() {
       <div class="course-section">
         <h3 class="section-title front-end-title">前端基础技术</h3>
         <div class="course-grid">
-          <div class="course-card" @click="openModal('HTML')">
+          <div class="course-card" v-for="item in learnStack" :key="item.stack" @click="openModal(item.stack)">
             <div class="course-card-content">
-              <h4 class="course-title">HTML 基础与进阶</h4>
-              <p class="course-description">掌握网页结构的基础标记语言，学习语义化标签和表单元素</p>
+              <h4 class="course-title">{{ item.stack }}</h4>
+              <p class="course-description">{{ item.introduction }}</p>
               <div class="course-footer">
-                <span class="course-duration">2-3周</span>
+                <span class="course-duration">{{ item.time }}</span>
                 <button class="details-btn">
                   详情
                   <svg class="details-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="course-card" @click="openModal('CSS')">
-            <div class="course-card-content">
-              <h4 class="course-title">CSS 样式设计精通</h4>
-              <p class="course-description">学习样式设计，包括选择器、盒模型、Flexbox、Grid布局和响应式设计</p>
-              <div class="course-footer">
-                <span class="course-duration">3-4周</span>
-                <button class="details-btn">
-                  详情
-                  <svg class="details-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="course-card" @click="openModal('JavaScript')">
-            <div class="course-card-content">
-              <h4 class="course-title">JavaScript 编程基础与高级特性</h4>
-              <p class="course-description">学习JavaScript编程语言基础、DOM操作、异步编程和ES6+特性</p>
-              <div class="course-footer">
-                <span class="course-duration">1-2个月</span>
-                <button class="details-btn">
-                  详情
-                  <svg class="details-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3">
+                    </path>
                   </svg>
                 </button>
               </div>
@@ -308,80 +136,17 @@ function closeModal() {
       <div class="course-section">
         <h3 class="section-title front-end-title">前端框架</h3>
         <div class="course-grid">
-          <div class="course-card" @click="openModal('Vue 2')">
+          <div class="course-card" v-for="item in learnvue" :key="item.stack" @click="openModal(item.stack)">
             <div class="course-card-content">
-              <h4 class="course-title">Vue.js 2 框架开发实战</h4>
-              <p class="course-description">学习Vue.js 2框架的核心概念、组件系统、指令和生命周期钩子</p>
+              <h4 class="course-title">{{ item.stack }}</h4>
+              <p class="course-description">{{ item.introduction }}</p>
               <div class="course-footer">
-                <span class="course-duration">1个月</span>
+                <span class="course-duration">{{ item.time }}</span>
                 <button class="details-btn">
                   详情
                   <svg class="details-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="course-card" @click="openModal('Vue 3')">
-            <div class="course-card-content">
-              <h4 class="course-title">Vue.js 3 新特性与实战</h4>
-              <p class="course-description">掌握Vue.js 3的新特性，包括Composition API、Teleport和Suspense</p>
-              <div class="course-footer">
-                <span class="course-duration">1个月</span>
-                <button class="details-btn">
-                  详情
-                  <svg class="details-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="course-card" @click="openModal('UniApp')">
-            <div class="course-card-content">
-              <h4 class="course-title">UniApp 跨平台应用开发</h4>
-              <p class="course-description">学习使用UniApp开发跨平台应用，一次编写多端运行（iOS、Android、Web）</p>
-              <div class="course-footer">
-                <span class="course-duration">1-2个月</span>
-                <button class="details-btn">
-                  详情
-                  <svg class="details-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="course-card" @click="openModal('Axios')">
-            <div class="course-card-content">
-              <h4 class="course-title">Axios 网络请求实战</h4>
-              <p class="course-description">掌握HTTP请求库Axios的使用，处理API调用、请求拦截和响应处理</p>
-              <div class="course-footer">
-                <span class="course-duration">2周</span>
-                <button class="details-btn">
-                  详情
-                  <svg class="details-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="course-card" @click="openModal('Tailwind CSS')">
-            <div class="course-card-content">
-              <h4 class="course-title">Tailwind CSS 实用样式框架</h4>
-              <p class="course-description">学习实用优先的CSS框架，掌握原子类设计、响应式工具和自定义配置</p>
-              <div class="course-footer">
-                <span class="course-duration">2-3周</span>
-                <button class="details-btn">
-                  详情
-                  <svg class="details-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3">
+                    </path>
                   </svg>
                 </button>
               </div>
@@ -394,48 +159,17 @@ function closeModal() {
       <div class="course-section">
         <h3 class="section-title back-end-title">后端开发</h3>
         <div class="course-grid">
-          <div class="course-card" @click="openModal('Node.js')">
+          <div class="course-card" v-for="item in learnnode" :key="item.stack" @click="openModal(item.stack)">
             <div class="course-card-content">
-              <h4 class="course-title">Node.js 后端开发基础</h4>
-              <p class="course-description">学习使用JavaScript构建后端应用程序，了解事件循环和非阻塞I/O</p>
+              <h4 class="course-title">{{ item.stack }}</h4>
+              <p class="course-description">{{ item.introduction }}</p>
               <div class="course-footer">
-                <span class="course-duration">1-2个月</span>
+                <span class="course-duration">{{ item.time }}</span>
                 <button class="details-btn">
                   详情
                   <svg class="details-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="course-card" @click="openModal('Express')">
-            <div class="course-card-content">
-              <h4 class="course-title">Express.js Web应用开发</h4>
-              <p class="course-description">学习使用Express框架快速构建Web应用和API，掌握中间件和路由</p>
-              <div class="course-footer">
-                <span class="course-duration">3-4周</span>
-                <button class="details-btn">
-                  详情
-                  <svg class="details-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="course-card" @click="openModal('TypeORM')">
-            <div class="course-card-content">
-              <h4 class="course-title">TypeORM 数据库映射框架</h4>
-              <p class="course-description">学习使用TypeORM进行数据库操作，实现对象关系映射和数据模型管理</p>
-              <div class="course-footer">
-                <span class="course-duration">2-3周</span>
-                <button class="details-btn">
-                  详情
-                  <svg class="details-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3">
+                    </path>
                   </svg>
                 </button>
               </div>
@@ -448,32 +182,17 @@ function closeModal() {
       <div class="course-section">
         <h3 class="section-title dev-tools-title">开发工具与其他</h3>
         <div class="course-grid">
-          <div class="course-card" @click="openModal('Git')">
+          <div class="course-card" v-for="item in learnSkill" :key="item.stack" @click="openModal(item.stack)">
             <div class="course-card-content">
-              <h4 class="course-title">Git 版本控制精通</h4>
-              <p class="course-description">掌握版本控制系统Git，学习分支管理、合并、提交和远程仓库操作</p>
+              <h4 class="course-title">{{ item.stack }}</h4>
+              <p class="course-description">{{ item.introduction }}</p>
               <div class="course-footer">
-                <span class="course-duration">2-3周</span>
+                <span class="course-duration">{{ item.time }}</span>
                 <button class="details-btn">
                   详情
                   <svg class="details-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="course-card" @click="openModal('TypeScript')">
-            <div class="course-card-content">
-              <h4 class="course-title">TypeScript 类型系统与高级特性</h4>
-              <p class="course-description">学习TypeScript的类型系统、接口、泛型和高级特性，提升代码质量</p>
-              <div class="course-footer">
-                <span class="course-duration">3-4周</span>
-                <button class="details-btn">
-                  详情
-                  <svg class="details-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3">
+                    </path>
                   </svg>
                 </button>
               </div>
@@ -611,12 +330,11 @@ function closeModal() {
           </div>
         </div>
       </div>
-
       <!-- 课程详情弹窗 -->
       <div v-if="showModal && currentCourse" class="modal-overlay" @click.self="closeModal">
         <div class="modal-container">
           <div class="modal-header">
-            <h3 class="modal-title">{{ currentCourse.title }}</h3>
+            <h3 class="modal-title">{{ currentCourse.stack }}</h3>
             <button class="modal-close-btn" @click="closeModal">
               <svg class="close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -628,7 +346,7 @@ function closeModal() {
             <div class="modal-info">
               <div class="info-item">
                 <span class="info-label">学习时长:</span>
-                <span class="info-value">{{ currentCourse.duration }}</span>
+                <span class="info-value">{{ currentCourse.time }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">前置要求:</span>
@@ -637,7 +355,7 @@ function closeModal() {
             </div>
             <div class="modal-description">
               <h4 class="description-title">课程简介</h4>
-              <p>{{ currentCourse.description }}</p>
+              <p>{{ currentCourse.introduction }}</p>
             </div>
             <div class="modal-course-content">
               <h4 class="content-title">课程内容</h4>
@@ -672,6 +390,13 @@ function closeModal() {
         </div>
       </div>
     </div>
+
+    <!-- 返回顶部按钮 -->
+    <button v-if="showBackToTop" class="back-to-top-btn" @click="backToTop" aria-label="返回顶部">
+      <svg class="back-to-top-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+      </svg>
+    </button>
   </div>
 </template>
 
@@ -688,6 +413,7 @@ function closeModal() {
   min-height: 100vh;
   background-color: #f8f9fa;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  position: relative;
 }
 
 /* 头部渐变区域样式 */
@@ -944,7 +670,6 @@ function closeModal() {
   color: #2d3748;
 }
 
-/* 修复弹窗关闭按钮样式 */
 .modal-close-btn {
   background: none;
   border: none;
@@ -994,13 +719,15 @@ function closeModal() {
 }
 
 .info-value {
-  font-size: 1rem;
+  font-size: 0.9375rem;
   color: #2d3748;
   font-weight: 600;
 }
 
 .modal-description {
   margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .description-title {
@@ -1124,7 +851,7 @@ function closeModal() {
   color: #718096;
 }
 
-/* 弹窗资源部分样式 */
+/* 弹窗资源部分样式简化 - 复用现有样式 */
 .modal-resources {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
@@ -1136,55 +863,45 @@ function closeModal() {
   font-weight: 600;
   margin-bottom: 1rem;
   color: #2d3748;
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
-.modal-resources .resource-category {
-  margin-bottom: 1.5rem;
-}
-
-.modal-resources .resource-category-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  color: #4a5568;
-}
-
-.modal-resources .resource-list {
-  list-style-type: none;
-}
-
-.modal-resources .resource-item {
-  margin-bottom: 0.5rem;
-}
-
-.modal-resources .resource-link {
+/* 返回顶部按钮样式 */
+.back-to-top-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  color: #667eea;
-  text-decoration: none;
-  transition: color 0.3s ease;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  z-index: 999;
 }
 
-.modal-resources .resource-link:hover {
-  color: #5a67d8;
+.back-to-top-btn:hover {
+  background-color: #5a67d8;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
 }
 
-.modal-resources .resource-name {
-  font-weight: 500;
-}
-
-.modal-resources .resource-desc {
-  font-size: 0.875rem;
-  color: #718096;
+.back-to-top-icon {
+  width: 20px;
+  height: 20px;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .course-grid {
-    grid-template-columns: 1fr;
-  }
 
+  .course-grid,
   .resources-grid {
     grid-template-columns: 1fr;
   }
@@ -1195,6 +912,13 @@ function closeModal() {
 
   .modal-container {
     max-height: 90vh;
+  }
+
+  .back-to-top-btn {
+    bottom: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
   }
 }
 
@@ -1225,6 +949,13 @@ function closeModal() {
 
   .modal-close-btn {
     width: 100%;
+  }
+
+  .back-to-top-btn {
+    bottom: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
   }
 }
 </style>
