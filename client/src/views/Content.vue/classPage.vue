@@ -15,31 +15,26 @@ const showBackToTop = ref(false);
 const getPath = async () => {
   const res = await getLearnPath()
   learnPath.value = res.data.data
-  console.log(learnPath.value)
 }
 // 获取前端基础技术栈
 const getStack = async (category) => {
   const res = await getLearnStack(category)
   learnStack.value = res.data.data
-  // console.log(learnStack.value)
 }
 // 获取前端框架栈
 const getVueStack = async (category) => {
   const res = await getLearnStack(category)
   learnvue.value = res.data.data
-  // console.log(learnvue.value)
 }
 // 获取Node.js栈
 const getNodeStack = async (category) => {
   const res = await getLearnStack(category)
   learnnode.value = res.data.data
-  // console.log(learnnode.value)
 }
 // 获取技能提升栈
 const getSkillStack = async (category) => {
   const res = await getLearnStack(category)
   learnSkill.value = res.data.data
-  // console.log(learnSkill.value)
 }
 // 弹窗状态管理
 const showModal = ref(false);
@@ -59,10 +54,7 @@ function closeModal() {
 
 // 返回顶部函数
 function backToTop() {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // 监听滚动事件
@@ -104,11 +96,6 @@ onMounted(() => {
 
     <!-- 主要内容区域 -->
     <div class="main-content">
-      <div class="path-title-container">
-        <h2 class="path-title">前端基础技术</h2>
-        <div class="title-divider"></div>
-      </div>
-
       <!-- 前端基础技术课程 -->
       <div class="course-section">
         <h3 class="section-title front-end-title">前端基础技术</h3>
@@ -201,135 +188,7 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- 推荐学习资源 -->
-      <div class="resources-section">
-        <h3 class="resources-title">推荐学习资源</h3>
-        <div class="resources-grid">
-          <!-- 官方文档资源 -->
-          <div class="resource-category">
-            <h4 class="resource-category-title">官方文档</h4>
-            <ul class="resource-list">
-              <li class="resource-item">
-                <a href="https://developer.mozilla.org/" target="_blank" class="resource-link">
-                  <span class="resource-name">MDN Web Docs</span>
-                  <span class="resource-desc">Web开发权威文档</span>
-                </a>
-              </li>
-              <li class="resource-item">
-                <a href="https://vuejs.org/" target="_blank" class="resource-link">
-                  <span class="resource-name">Vue.js 文档</span>
-                  <span class="resource-desc">Vue.js官方指南</span>
-                </a>
-              </li>
-              <li class="resource-item">
-                <a href="https://nodejs.org/" target="_blank" class="resource-link">
-                  <span class="resource-name">Node.js 文档</span>
-                  <span class="resource-desc">Node.js官方文档</span>
-                </a>
-              </li>
-              <li class="resource-item">
-                <a href="https://expressjs.com/" target="_blank" class="resource-link">
-                  <span class="resource-name">Express 文档</span>
-                  <span class="resource-desc">Express框架指南</span>
-                </a>
-              </li>
-            </ul>
-          </div>
 
-          <!-- 教程网站资源 -->
-          <div class="resource-category">
-            <h4 class="resource-category-title">教程网站</h4>
-            <ul class="resource-list">
-              <li class="resource-item">
-                <a href="https://frontendmasters.com/" target="_blank" class="resource-link">
-                  <span class="resource-name">Frontend Masters</span>
-                  <span class="resource-desc">高级前端开发课程</span>
-                </a>
-              </li>
-              <li class="resource-item">
-                <a href="https://www.freecodecamp.org/" target="_blank" class="resource-link">
-                  <span class="resource-name">freeCodeCamp</span>
-                  <span class="resource-desc">免费编程学习平台</span>
-                </a>
-              </li>
-              <li class="resource-item">
-                <a href="https://www.codecademy.com/" target="_blank" class="resource-link">
-                  <span class="resource-name">Codecademy</span>
-                  <span class="resource-desc">交互式编程课程</span>
-                </a>
-              </li>
-              <li class="resource-item">
-                <a href="https://www.udemy.com/" target="_blank" class="resource-link">
-                  <span class="resource-name">Udemy</span>
-                  <span class="resource-desc">在线学习平台</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <!-- 社区与论坛资源 -->
-          <div class="resource-category">
-            <h4 class="resource-category-title">社区与论坛</h4>
-            <ul class="resource-list">
-              <li class="resource-item">
-                <a href="https://stackoverflow.com/" target="_blank" class="resource-link">
-                  <span class="resource-name">Stack Overflow</span>
-                  <span class="resource-desc">编程问答社区</span>
-                </a>
-              </li>
-              <li class="resource-item">
-                <a href="https://github.com/" target="_blank" class="resource-link">
-                  <span class="resource-name">GitHub</span>
-                  <span class="resource-desc">代码托管与社区</span>
-                </a>
-              </li>
-              <li class="resource-item">
-                <a href="https://dev.to/" target="_blank" class="resource-link">
-                  <span class="resource-name">DEV Community</span>
-                  <span class="resource-desc">开发者社区与博客</span>
-                </a>
-              </li>
-              <li class="resource-item">
-                <a href="https://segmentfault.com/" target="_blank" class="resource-link">
-                  <span class="resource-name">SegmentFault</span>
-                  <span class="resource-desc">中文开发者社区</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <!-- 学习工具资源 -->
-          <div class="resource-category">
-            <h4 class="resource-category-title">学习工具</h4>
-            <ul class="resource-list">
-              <li class="resource-item">
-                <a href="https://codesandbox.io/" target="_blank" class="resource-link">
-                  <span class="resource-name">CodeSandbox</span>
-                  <span class="resource-desc">在线代码编辑器</span>
-                </a>
-              </li>
-              <li class="resource-item">
-                <a href="https://jsfiddle.net/" target="_blank" class="resource-link">
-                  <span class="resource-name">JSFiddle</span>
-                  <span class="resource-desc">前端代码测试工具</span>
-                </a>
-              </li>
-              <li class="resource-item">
-                <a href="https://codepen.io/" target="_blank" class="resource-link">
-                  <span class="resource-name">CodePen</span>
-                  <span class="resource-desc">前端代码展示平台</span>
-                </a>
-              </li>
-              <li class="resource-item">
-                <a href="https://leetcode.com/" target="_blank" class="resource-link">
-                  <span class="resource-name">LeetCode</span>
-                  <span class="resource-desc">算法练习平台</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
       <!-- 课程详情弹窗 -->
       <div v-if="showModal && currentCourse" class="modal-overlay" @click.self="closeModal">
         <div class="modal-container">
@@ -342,7 +201,7 @@ onMounted(() => {
             </button>
           </div>
           <div class="modal-content">
-            <!-- 重新布局的课程信息 -->
+            <!-- 课程信息 -->
             <div class="modal-info">
               <div class="info-item">
                 <span class="info-label">学习时长:</span>
@@ -360,7 +219,7 @@ onMounted(() => {
             <div class="modal-course-content">
               <h4 class="content-title">课程内容</h4>
               <ul class="content-list">
-                <li v-for="item in currentCourse.content" :key="item" class="content-item">
+                <li v-for="item in currentCourse.content.split(',')" :key="item" class="content-item">
                   {{ item }}
                 </li>
               </ul>
@@ -370,18 +229,12 @@ onMounted(() => {
             <div class="modal-resources">
               <h4 class="resources-title">推荐资源</h4>
               <div class="resource-category">
-                <h5 class="resource-category-title">官方文档</h5>
                 <ul class="resource-list">
                   <li class="resource-item">
-                    <a href="https://developer.mozilla.org/" target="_blank" class="resource-link">
-                      <span class="resource-name">MDN Web Docs</span>
-                      <span class="resource-desc">Web开发权威文档</span>
-                    </a>
+                    <a :href="currentCourse.resources.split(',')[1]">{{ currentCourse.resources.split(",")[0] }}</a>
                   </li>
-
                 </ul>
               </div>
-
             </div>
           </div>
           <div class="modal-footer">
@@ -399,7 +252,6 @@ onMounted(() => {
     </button>
   </div>
 </template>
-
 <style scoped>
 /* 全局样式重置 */
 * {
@@ -412,7 +264,7 @@ onMounted(() => {
 .class-page {
   min-height: 100vh;
   background-color: #f8f9fa;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   position: relative;
 }
 
@@ -446,16 +298,23 @@ onMounted(() => {
   flex-wrap: wrap;
 }
 
-.start-learning-btn {
-  background-color: white;
-  color: #667eea;
-  border: none;
+.start-learning-btn,
+.learn-more-btn {
   padding: 0.75rem 2rem;
   border-radius: 50px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.start-learning-btn {
+  background-color: white;
+  color: #667eea;
 }
 
 .start-learning-btn:hover {
@@ -468,14 +327,6 @@ onMounted(() => {
   background-color: transparent;
   color: white;
   border: 2px solid white;
-  padding: 0.75rem 2rem;
-  border-radius: 50px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
   gap: 0.5rem;
 }
 
@@ -484,10 +335,18 @@ onMounted(() => {
   transform: translateY(-2px);
 }
 
+.arrow-icon,
+.details-icon,
+.close-icon,
+.back-to-top-icon {
+  fill: none;
+  stroke: currentColor;
+  transition: transform 0.3s ease;
+}
+
 .arrow-icon {
   width: 16px;
   height: 16px;
-  transition: transform 0.3s ease;
 }
 
 .learn-more-btn:hover .arrow-icon {
@@ -499,26 +358,6 @@ onMounted(() => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
-}
-
-/* 路径标题样式 */
-.path-title-container {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.path-title {
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
-  color: #2d3748;
-  margin-bottom: 1rem;
-}
-
-.title-divider {
-  width: 100px;
-  height: 4px;
-  background-color: #667eea;
-  margin: 0 auto;
-  border-radius: 2px;
 }
 
 /* 课程部分样式 */
@@ -624,7 +463,6 @@ onMounted(() => {
 .details-icon {
   width: 14px;
   height: 14px;
-  transition: transform 0.3s ease;
 }
 
 .details-btn:hover .details-icon {
@@ -676,7 +514,6 @@ onMounted(() => {
   font-size: 16px;
   color: #333;
   font-weight: bold;
-  text-decoration: none;
   padding: 8px 16px;
   border-radius: 4px;
   transition: all 0.3s ease;
@@ -724,23 +561,14 @@ onMounted(() => {
   font-weight: 600;
 }
 
-.modal-description {
+.modal-description,
+.modal-course-content {
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid #e2e8f0;
 }
 
-.description-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  color: #2d3748;
-}
-
-.modal-course-content {
-  margin-bottom: 1rem;
-}
-
+.description-title,
 .content-title {
   font-size: 1.125rem;
   font-weight: 600;
@@ -776,82 +604,7 @@ onMounted(() => {
   border-top: 1px solid #e2e8f0;
 }
 
-/* 资源推荐模块样式 */
-.resources-section {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 2px solid #e2e8f0;
-}
-
-.resources-title {
-  color: #9f7aea;
-  font-size: clamp(1.25rem, 2vw, 1.75rem);
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e2e8f0;
-}
-
-.resources-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.resource-category {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
-}
-
-.resource-category-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #4a5568;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.resource-list {
-  list-style-type: none;
-}
-
-.resource-item {
-  margin-bottom: 0.75rem;
-}
-
-.resource-item:last-child {
-  margin-bottom: 0;
-}
-
-.resource-link {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  color: #667eea;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  padding: 0.5rem;
-  border-radius: 4px;
-}
-
-.resource-link:hover {
-  background-color: #f7fafc;
-  color: #5a67d8;
-}
-
-.resource-name {
-  font-weight: 600;
-  font-size: 0.9375rem;
-}
-
-.resource-desc {
-  font-size: 0.875rem;
-  color: #718096;
-}
-
-/* 弹窗资源部分样式简化 - 复用现有样式 */
+/* 弹窗资源部分样式 */
 .modal-resources {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
@@ -860,11 +613,10 @@ onMounted(() => {
 
 .modal-resources .resources-title {
   font-size: 1.125rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
   color: #2d3748;
   border-bottom: none;
   padding-bottom: 0;
+  margin-bottom: 0.75rem;
 }
 
 /* 返回顶部按钮样式 */
@@ -900,9 +652,7 @@ onMounted(() => {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-
-  .course-grid,
-  .resources-grid {
+  .course-grid {
     grid-template-columns: 1fr;
   }
 
@@ -940,7 +690,6 @@ onMounted(() => {
   .learn-more-btn {
     width: 100%;
     max-width: 300px;
-    justify-content: center;
   }
 
   .modal-footer {
